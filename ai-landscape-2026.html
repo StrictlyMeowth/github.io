@@ -7,481 +7,85 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0f;
-    --surface: #111118;
-    --surface2: #18181f;
-    --border: #2a2a3a;
-    --text: #e8e8f0;
-    --muted: #6b6b85;
-    --accent: #7c6dfa;
-    --accent2: #fa6d9a;
-
-    --openai: #10a37f;
-    --anthropic: #c96442;
-    --google: #4285f4;
-    --meta: #0082fb;
-    --microsoft: #0078d4;
-    --xai: #e7e7e7;
-    --mistral: #f77f00;
-    --deepseek: #4f8ef7;
-    --apple: #a2a2a7;
-    --alibaba: #ff6a00;
-    --independent: #9b59b6;
+    --bg: #0a0a0f; --surface: #111118; --surface2: #18181f; --border: #2a2a3a;
+    --text: #e8e8f0; --muted: #6b6b85; --accent: #7c6dfa; --accent2: #fa6d9a;
   }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    min-height: 100vh;
-    padding: 32px 24px 80px;
-  }
-
-  /* ── Header ── */
-  header {
-    text-align: center;
-    margin-bottom: 48px;
-  }
-  .eyebrow {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 3px;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-  h1 {
-    font-size: clamp(28px, 5vw, 48px);
-    font-weight: 800;
-    line-height: 1.1;
-    background: linear-gradient(135deg, #fff 0%, #8878ff 60%, #fa6d9a 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 12px;
-  }
-  .subtitle {
-    color: var(--muted);
-    font-size: 14px;
-    font-weight: 400;
-  }
-
-  /* ── Tabs ── */
-  .tabs {
-    display: flex;
-    gap: 6px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 36px;
-  }
-  .tab {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    padding: 8px 18px;
-    border-radius: 100px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--muted);
-    cursor: pointer;
-    transition: all 0.2s;
-    letter-spacing: 0.5px;
-  }
-  .tab:hover { border-color: var(--accent); color: var(--text); }
-  .tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-
-  /* ── Sections ── */
-  .section { display: none; }
-  .section.active { display: block; }
-
-  /* ── Section Title ── */
-  .section-title {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 3px;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-
-  /* ── Org Cards ── */
-  .orgs-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 16px;
-  }
-
-  .org-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 24px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s, border-color 0.2s;
-  }
-  .org-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--accent);
-  }
-  .org-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--org-color, var(--accent));
-  }
-
-  .org-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 12px;
-  }
-  .org-name {
-    font-size: 18px;
-    font-weight: 700;
-  }
-  .org-flag {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    padding: 3px 8px;
-    border-radius: 100px;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    white-space: nowrap;
-  }
-  .org-tagline {
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 16px;
-    line-height: 1.5;
-  }
-  .org-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .meta-row {
-    display: flex;
-    gap: 8px;
-  }
-  .meta-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    min-width: 60px;
-    padding-top: 2px;
-  }
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-  .tag {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    padding: 3px 9px;
-    border-radius: 6px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--text);
-  }
-  .tag.colored {
-    background: color-mix(in srgb, var(--org-color, var(--accent)) 15%, transparent);
-    border-color: color-mix(in srgb, var(--org-color, var(--accent)) 40%, transparent);
-    color: var(--org-color, var(--accent));
-  }
-
-  /* ── Models Table View ── */
-  .models-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 14px;
-  }
-
-  .model-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 20px;
-    position: relative;
-    transition: border-color 0.2s;
-  }
-  .model-card:hover { border-color: var(--accent); }
-  .model-card::after {
-    content: attr(data-type);
-    position: absolute;
-    top: 14px; right: 14px;
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    padding: 3px 8px;
-    border-radius: 100px;
-    background: var(--surface2);
-    color: var(--muted);
-    border: 1px solid var(--border);
-  }
-
-  .model-by {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
-    margin-bottom: 4px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-  .model-name {
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 8px;
-    padding-right: 80px;
-  }
-  .model-desc {
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.6;
-    margin-bottom: 14px;
-  }
-  .model-specs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .spec {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    padding: 4px 10px;
-    border-radius: 6px;
-    background: var(--surface2);
-    color: var(--muted);
-  }
-  .spec.highlight {
-    background: color-mix(in srgb, var(--accent) 15%, transparent);
-    color: var(--accent);
-    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-  }
-  .org-dot {
-    display: inline-block;
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--org-color, #666);
-    margin-right: 5px;
-    vertical-align: middle;
-  }
-
-  /* ── Apps View ── */
-  .apps-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 14px;
-  }
-  .app-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 20px;
-    transition: border-color 0.2s;
-  }
-  .app-card:hover { border-color: var(--accent); }
-
-  .app-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  .app-icon {
-    width: 36px; height: 36px;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-    background: var(--surface2);
-    flex-shrink: 0;
-  }
-  .app-name { font-size: 16px; font-weight: 700; }
-  .app-category {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
-    margin-top: 1px;
-  }
-  .app-desc {
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.6;
-    margin-bottom: 14px;
-  }
-  .app-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-  }
-  .app-powered {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
-  }
-  .app-price {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text);
-  }
-  .stars {
-    display: flex;
-    gap: 2px;
-    margin-bottom: 4px;
-  }
-  .star {
-    width: 12px; height: 12px;
-    border-radius: 2px;
-    background: var(--surface2);
-  }
-  .star.on { background: #f5c518; }
-  .ease-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
-    margin-bottom: 2px;
-  }
-
-  /* ── Map View ── */
-  .map-container {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 32px;
-    margin-bottom: 24px;
-  }
-  .map-row {
-    display: grid;
-    grid-template-columns: 140px 1fr;
-    gap: 16px;
-    margin-bottom: 20px;
-    align-items: start;
-  }
-  .map-category {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    padding-top: 8px;
-    line-height: 1.4;
-  }
-  .map-items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .map-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 14px;
-    border-radius: 100px;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: default;
-    transition: border-color 0.2s;
-  }
-  .map-item:hover { border-color: var(--accent); }
-  .map-item .dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .map-divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 4px 0 20px;
-  }
-
-  /* ── How to track ── */
-  .track-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-  .track-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 24px;
-  }
-  .track-num {
-    font-family: 'DM Mono', monospace;
-    font-size: 32px;
-    font-weight: 300;
-    color: var(--border);
-    margin-bottom: 8px;
-    line-height: 1;
-  }
-  .track-title {
-    font-size: 15px;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-  .track-desc {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.6;
-  }
-  .track-desc a {
-    color: var(--accent);
-    text-decoration: none;
-  }
-
-  /* ── Updated badge ── */
-  .updated {
-    text-align: center;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 48px;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
-  }
-
-  /* Filter bar */
-  .filter-bar {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-  }
-  .filter-btn {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    padding: 5px 14px;
-    border-radius: 100px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--muted);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .filter-btn:hover { color: var(--text); border-color: #555; }
-  .filter-btn.active { background: var(--surface2); color: var(--text); border-color: #555; }
-
-  /* Framework note */
-  .framework-box {
-    background: color-mix(in srgb, var(--accent) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
-    border-radius: 14px;
-    padding: 20px 24px;
-    margin-bottom: 28px;
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.7;
-  }
-  .framework-box strong { color: var(--text); }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Syne',sans-serif; min-height:100vh; padding:32px 24px 80px; }
+  header { text-align:center; margin-bottom:48px; }
+  .eyebrow { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:3px; color:var(--muted); text-transform:uppercase; margin-bottom:12px; }
+  h1 { font-size:clamp(28px,5vw,48px); font-weight:800; line-height:1.1; background:linear-gradient(135deg,#fff 0%,#8878ff 60%,#fa6d9a 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:12px; }
+  .subtitle { color:var(--muted); font-size:14px; }
+  .tabs { display:flex; gap:6px; justify-content:center; flex-wrap:wrap; margin-bottom:36px; }
+  .tab { font-family:'DM Mono',monospace; font-size:12px; padding:8px 18px; border-radius:100px; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.2s; }
+  .tab:hover { border-color:var(--accent); color:var(--text); }
+  .tab.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .section { display:none; }
+  .section.active { display:block; }
+  .framework-box { background:color-mix(in srgb,var(--accent) 8%,transparent); border:1px solid color-mix(in srgb,var(--accent) 25%,transparent); border-radius:14px; padding:18px 22px; margin-bottom:28px; font-size:13px; color:var(--muted); line-height:1.9; }
+  .framework-box strong { color:var(--text); }
+  .map-container { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:28px; margin-bottom:20px; }
+  .map-layer-title { font-size:15px; font-weight:700; margin-bottom:4px; }
+  .map-layer-sub { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); margin-bottom:20px; }
+  .map-row { display:grid; grid-template-columns:130px 1fr; gap:16px; margin-bottom:18px; align-items:start; }
+  .map-category { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; padding-top:8px; line-height:1.4; }
+  .map-items { display:flex; flex-wrap:wrap; gap:8px; }
+  .map-item { display:flex; align-items:center; gap:6px; padding:7px 14px; border-radius:100px; border:1px solid var(--border); background:var(--surface2); font-size:13px; font-weight:600; transition:border-color 0.2s; }
+  .map-item:hover { border-color:var(--accent); }
+  .dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; display:inline-block; }
+  .map-divider { border:none; border-top:1px solid var(--border); margin:2px 0 18px; }
+  .orgs-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; }
+  .org-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; position:relative; overflow:hidden; transition:transform 0.2s,border-color 0.2s; }
+  .org-card:hover { transform:translateY(-2px); border-color:var(--accent); }
+  .org-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--org-color,var(--accent)); }
+  .org-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; }
+  .org-name { font-size:18px; font-weight:700; }
+  .org-flag { font-family:'DM Mono',monospace; font-size:10px; padding:3px 8px; border-radius:100px; border:1px solid var(--border); color:var(--muted); }
+  .org-tagline { font-size:12px; color:var(--muted); margin-bottom:16px; line-height:1.5; }
+  .org-meta { display:flex; flex-direction:column; gap:8px; }
+  .meta-row { display:flex; gap:8px; }
+  .meta-label { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; min-width:60px; padding-top:3px; }
+  .tags { display:flex; flex-wrap:wrap; gap:4px; }
+  .tag { font-family:'DM Mono',monospace; font-size:11px; padding:3px 9px; border-radius:6px; background:var(--surface2); border:1px solid var(--border); color:var(--text); }
+  .tag.colored { background:color-mix(in srgb,var(--org-color,var(--accent)) 15%,transparent); border-color:color-mix(in srgb,var(--org-color,var(--accent)) 40%,transparent); color:var(--org-color,var(--accent)); }
+  .grid3 { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; }
+  .model-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; position:relative; transition:border-color 0.2s; }
+  .model-card:hover { border-color:var(--accent); }
+  .model-card::after { content:attr(data-type); position:absolute; top:14px; right:14px; font-family:'DM Mono',monospace; font-size:10px; padding:3px 8px; border-radius:100px; background:var(--surface2); color:var(--muted); border:1px solid var(--border); }
+  .model-by { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-bottom:4px; letter-spacing:1px; text-transform:uppercase; }
+  .model-name { font-size:16px; font-weight:700; margin-bottom:8px; padding-right:80px; }
+  .model-desc { font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:14px; }
+  .specs { display:flex; flex-wrap:wrap; gap:6px; }
+  .spec { font-family:'DM Mono',monospace; font-size:10px; padding:4px 10px; border-radius:6px; background:var(--surface2); color:var(--muted); }
+  .spec.hl { background:color-mix(in srgb,var(--accent) 15%,transparent); color:var(--accent); border:1px solid color-mix(in srgb,var(--accent) 30%,transparent); }
+  .spec.hl2 { background:color-mix(in srgb,var(--accent2) 15%,transparent); color:var(--accent2); border:1px solid color-mix(in srgb,var(--accent2) 30%,transparent); }
+  .app-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; transition:border-color 0.2s; }
+  .app-card:hover { border-color:var(--accent); }
+  .app-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .app-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; background:var(--surface2); flex-shrink:0; }
+  .app-name { font-size:16px; font-weight:700; }
+  .app-cat { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-top:1px; }
+  .app-desc { font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:14px; }
+  .app-footer { display:flex; justify-content:space-between; align-items:flex-end; }
+  .app-meta { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); }
+  .app-price { font-family:'DM Mono',monospace; font-size:12px; font-weight:500; color:var(--text); }
+  .stars { display:flex; gap:2px; margin-bottom:4px; }
+  .star { width:12px; height:12px; border-radius:2px; background:var(--surface2); }
+  .star.on { background:#f5c518; }
+  .ease-label { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-bottom:2px; }
+  .filter-bar { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:20px; }
+  .fbtn { font-family:'DM Mono',monospace; font-size:11px; padding:5px 14px; border-radius:100px; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.15s; }
+  .fbtn:hover { color:var(--text); border-color:#555; }
+  .fbtn.active { background:var(--surface2); color:var(--text); border-color:#555; }
+  .section-note { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); margin-bottom:20px; line-height:1.8; padding:14px 18px; background:var(--surface); border:1px solid var(--border); border-radius:10px; }
+  .agent-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; transition:border-color 0.2s; position:relative; overflow:hidden; }
+  .agent-card:hover { border-color:var(--accent2); }
+  .agent-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--accent2); opacity:0.5; }
+  .agent-type { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:1px; }
+  .agent-name { font-size:16px; font-weight:700; margin-bottom:8px; }
+  .agent-desc { font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:14px; }
+  .updated { text-align:center; font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); margin-top:48px; padding-top:24px; border-top:1px solid var(--border); }
+  .org-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; vertical-align:middle; }
 </style>
 </head>
 <body>
@@ -493,580 +97,386 @@
 </header>
 
 <nav class="tabs">
-  <button class="tab active" onclick="switchTab('map')">🗺 Landscape Map</button>
-  <button class="tab" onclick="switchTab('orgs')">🏢 Organisations</button>
-  <button class="tab" onclick="switchTab('models')">🧠 Models</button>
-  <button class="tab" onclick="switchTab('apps')">📱 Apps & Tools</button>
-  <button class="tab" onclick="switchTab('track')">📡 How to Stay Current</button>
+  <button class="tab active" onclick="switchTab('map',this)">🗺 Landscape Map</button>
+  <button class="tab" onclick="switchTab('orgs',this)">🏢 Organisations</button>
+  <button class="tab" onclick="switchTab('models',this)">🧠 Models</button>
+  <button class="tab" onclick="switchTab('apps',this)">📱 Apps & Tools</button>
+  <button class="tab" onclick="switchTab('agents',this)">🤖 Autonomous Agents</button>
+  <button class="tab" onclick="switchTab('creative',this)">🎨 Creative AI</button>
 </nav>
 
-<!-- ════════════════════════════════════════════
-     TAB 1 · LANDSCAPE MAP
-════════════════════════════════════════════ -->
+<!-- MAP -->
 <div id="tab-map" class="section active">
   <div class="framework-box">
-    <strong>The simplest mental model:</strong> Think of AI in three layers. <strong>Labs</strong> build the raw intelligence (models). <strong>Apps</strong> wrap that intelligence in a usable interface. <strong>You</strong> interact with apps, not models. The same lab can own multiple models and multiple apps — and apps often run on models from other labs.
+    <strong>Labs</strong> build the raw intelligence — models. &nbsp;·&nbsp;
+    <strong>Models</strong> are the trained brains: versioned, benchmarked, deployed via API. &nbsp;·&nbsp;
+    <strong>Apps</strong> are what you open. &nbsp;·&nbsp;
+    <strong>Agents</strong> act autonomously on your behalf. &nbsp;·&nbsp;
+    <strong>Creative tools</strong> generate images, video, voice. &nbsp;·&nbsp;
+    You interact with apps — not models.
   </div>
 
   <div class="map-container">
-    <p class="section-title">Layer 1 — The Labs (who builds the AI)</p>
-    <div class="map-row">
-      <div class="map-category">US Commercial</div>
-      <div class="map-items">
-        <div class="map-item"><span class="dot" style="background:#10a37f"></span>OpenAI</div>
-        <div class="map-item"><span class="dot" style="background:#c96442"></span>Anthropic</div>
-        <div class="map-item"><span class="dot" style="background:#4285f4"></span>Google DeepMind</div>
-        <div class="map-item"><span class="dot" style="background:#0082fb"></span>Meta AI</div>
-        <div class="map-item"><span class="dot" style="background:#e7e7e7"></span>xAI</div>
-        <div class="map-item"><span class="dot" style="background:#0078d4"></span>Microsoft Research</div>
-      </div>
-    </div>
+    <div class="map-layer-title">Layer 1 — Labs</div>
+    <div class="map-layer-sub">The organisations that research, train, and own the AI</div>
+    <div class="map-row"><div class="map-category">US</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#10a37f"></span>OpenAI</div>
+      <div class="map-item"><span class="dot" style="background:#c96442"></span>Anthropic</div>
+      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Google DeepMind</div>
+      <div class="map-item"><span class="dot" style="background:#0082fb"></span>Meta AI</div>
+      <div class="map-item"><span class="dot" style="background:#c8c8c8"></span>xAI</div>
+      <div class="map-item"><span class="dot" style="background:#0078d4"></span>Microsoft Research</div>
+    </div></div>
     <hr class="map-divider">
-    <div class="map-row">
-      <div class="map-category">European</div>
-      <div class="map-items">
-        <div class="map-item"><span class="dot" style="background:#f77f00"></span>Mistral AI 🇫🇷</div>
-        <div class="map-item"><span class="dot" style="background:#e63946"></span>Aleph Alpha 🇩🇪</div>
-      </div>
-    </div>
+    <div class="map-row"><div class="map-category">Europe</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#f77f00"></span>Mistral AI 🇫🇷</div>
+      <div class="map-item"><span class="dot" style="background:#e63946"></span>Aleph Alpha 🇩🇪</div>
+    </div></div>
     <hr class="map-divider">
-    <div class="map-row">
-      <div class="map-category">Chinese</div>
-      <div class="map-items">
-        <div class="map-item"><span class="dot" style="background:#4f8ef7"></span>DeepSeek</div>
-        <div class="map-item"><span class="dot" style="background:#ff6a00"></span>Alibaba (Qwen)</div>
-        <div class="map-item"><span class="dot" style="background:#eb3434"></span>Baidu (ERNIE)</div>
-      </div>
-    </div>
+    <div class="map-row"><div class="map-category">China</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#4f8ef7"></span>DeepSeek</div>
+      <div class="map-item"><span class="dot" style="background:#ff6a00"></span>Alibaba (Qwen)</div>
+      <div class="map-item"><span class="dot" style="background:#eb3434"></span>Baidu (ERNIE)</div>
+    </div></div>
     <hr class="map-divider">
-    <div class="map-row">
-      <div class="map-category">Device / On-premise</div>
-      <div class="map-items">
-        <div class="map-item"><span class="dot" style="background:#a2a2a7"></span>Apple</div>
-        <div class="map-item"><span class="dot" style="background:#ff9500"></span>Amazon (Bedrock)</div>
-      </div>
-    </div>
+    <div class="map-row"><div class="map-category">Device / Cloud</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#a2a2a7"></span>Apple</div>
+      <div class="map-item"><span class="dot" style="background:#ff9500"></span>Amazon</div>
+    </div></div>
   </div>
 
   <div class="map-container">
-    <p class="section-title">Layer 2 — The Models (the actual AI brains)</p>
-    <div class="map-row">
-      <div class="map-category">OpenAI</div>
-      <div class="map-items">
-        <div class="map-item"><span class="dot" style="background:#10a37f"></span>GPT-5.2</div>
-        <div class="map-item"><span class="dot" style="background:#10a37f"></span>GPT-5.3-Codex</div>
-        <div class="map-item"><span class="dot" style="background:#10a37f"></span>o3 / o4 (reasoning)</div>
-        <div class="map-item"><span class="dot" style="background:#10a37f"></span>GPT-4o-mini</div>
-        <div class="map-item"><span class="dot" style="background:#10a37f"></span>Whisper (voice)</div>
-        <div class="map-item"><span class="dot" style="background:#10a37f"></span>DALL-E / GPT Image</div>
-      </div>
-    </div>
+    <div class="map-layer-title">Layer 2 — Models</div>
+    <div class="map-layer-sub">The actual brains — trained, versioned, accessed via API or baked into apps</div>
+    <div class="map-row"><div class="map-category">OpenAI</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#10a37f"></span>GPT-5.2</div>
+      <div class="map-item"><span class="dot" style="background:#10a37f"></span>GPT-5.3-Codex</div>
+      <div class="map-item"><span class="dot" style="background:#10a37f"></span>o3 / o4 reasoning</div>
+      <div class="map-item"><span class="dot" style="background:#10a37f"></span>Whisper (voice)</div>
+    </div></div>
     <hr class="map-divider">
-    <div class="map-row">
-      <div class="map-category">Anthropic</div>
-      <div class="map-items">
-        <div class="map-item"><span class="dot" style="background:#c96442"></span>Claude Opus 4.6</div>
-        <div class="map-item"><span class="dot" style="background:#c96442"></span>Claude Sonnet 4.6</div>
-        <div class="map-item"><span class="dot" style="background:#c96442"></span>Claude Haiku 4.5</div>
-      </div>
-    </div>
+    <div class="map-row"><div class="map-category">Anthropic</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#c96442"></span>Claude Opus 4.6</div>
+      <div class="map-item"><span class="dot" style="background:#c96442"></span>Claude Sonnet 4.6</div>
+      <div class="map-item"><span class="dot" style="background:#c96442"></span>Claude Haiku 4.5</div>
+    </div></div>
     <hr class="map-divider">
-    <div class="map-row">
-      <div class="map-category">Google</div>
-      <div class="map-items">
-        <div class="map-item"><span class="dot" style="background:#4285f4"></span>Gemini 2.5 Pro</div>
-        <div class="map-item"><span class="dot" style="background:#4285f4"></span>Gemini 2.5 Flash</div>
-        <div class="map-item"><span class="dot" style="background:#4285f4"></span>Gemini Nano (on-device)</div>
-        <div class="map-item"><span class="dot" style="background:#4285f4"></span>Imagen 3 (images)</div>
-      </div>
-    </div>
+    <div class="map-row"><div class="map-category">Google</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Gemini 2.5 Pro</div>
+      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Gemini 2.5 Flash</div>
+      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Veo 3.1 (video)</div>
+      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Imagen 3 (image)</div>
+    </div></div>
     <hr class="map-divider">
-    <div class="map-row">
-      <div class="map-category">Meta</div>
-      <div class="map-items">
-        <div class="map-item"><span class="dot" style="background:#0082fb"></span>Llama 4 Scout</div>
-        <div class="map-item"><span class="dot" style="background:#0082fb"></span>Llama 4 Maverick</div>
-        <div class="map-item"><span class="dot" style="background:#0082fb"></span>Llama 4 Behemoth</div>
-      </div>
-    </div>
-    <hr class="map-divider">
-    <div class="map-row">
-      <div class="map-category">Others</div>
-      <div class="map-items">
-        <div class="map-item"><span class="dot" style="background:#e7e7e7"></span>Grok 3 (xAI)</div>
-        <div class="map-item"><span class="dot" style="background:#f77f00"></span>Mistral Large 3</div>
-        <div class="map-item"><span class="dot" style="background:#4f8ef7"></span>DeepSeek R2</div>
-        <div class="map-item"><span class="dot" style="background:#ff6a00"></span>Qwen3 (Alibaba)</div>
-        <div class="map-item"><span class="dot" style="background:#a2a2a7"></span>Apple Foundation</div>
-      </div>
-    </div>
+    <div class="map-row"><div class="map-category">Others</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#0082fb"></span>Llama 4 (Meta)</div>
+      <div class="map-item"><span class="dot" style="background:#c8c8c8"></span>Grok 3 (xAI)</div>
+      <div class="map-item"><span class="dot" style="background:#f77f00"></span>Mistral Large 3</div>
+      <div class="map-item"><span class="dot" style="background:#4f8ef7"></span>DeepSeek R2</div>
+      <div class="map-item"><span class="dot" style="background:#ff6a00"></span>Qwen3 (Alibaba)</div>
+    </div></div>
   </div>
 
   <div class="map-container">
-    <p class="section-title">Layer 3 — The Apps (what you actually open)</p>
-    <div class="map-row">
-      <div class="map-category">General Chat</div>
-      <div class="map-items">
-        <div class="map-item"><span class="dot" style="background:#10a37f"></span>ChatGPT</div>
-        <div class="map-item"><span class="dot" style="background:#c96442"></span>Claude.ai</div>
-        <div class="map-item"><span class="dot" style="background:#4285f4"></span>Gemini app</div>
-        <div class="map-item"><span class="dot" style="background:#e7e7e7"></span>Grok app</div>
-        <div class="map-item"><span class="dot" style="background:#f77f00"></span>Le Chat</div>
-        <div class="map-item"><span class="dot" style="background:#4f8ef7"></span>DeepSeek app</div>
-      </div>
-    </div>
+    <div class="map-layer-title">Layer 3 — Apps</div>
+    <div class="map-layer-sub">Interfaces built on top of models — what you actually open</div>
+    <div class="map-row"><div class="map-category">General Chat</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#10a37f"></span>ChatGPT</div>
+      <div class="map-item"><span class="dot" style="background:#c96442"></span>Claude.ai</div>
+      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Gemini</div>
+      <div class="map-item"><span class="dot" style="background:#c8c8c8"></span>Grok</div>
+      <div class="map-item"><span class="dot" style="background:#f77f00"></span>Le Chat</div>
+      <div class="map-item"><span class="dot" style="background:#4f8ef7"></span>DeepSeek</div>
+    </div></div>
     <hr class="map-divider">
-    <div class="map-row">
-      <div class="map-category">Research / Search</div>
-      <div class="map-items">
-        <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Perplexity</div>
-        <div class="map-item"><span class="dot" style="background:#10a37f"></span>ChatGPT Search</div>
-        <div class="map-item"><span class="dot" style="background:#4285f4"></span>AI Overviews (Google)</div>
-        <div class="map-item"><span class="dot" style="background:#e7e7e7"></span>Grok on X</div>
-      </div>
-    </div>
+    <div class="map-row"><div class="map-category">Research</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Perplexity</div>
+      <div class="map-item"><span class="dot" style="background:#4285f4"></span>AI Overviews</div>
+    </div></div>
     <hr class="map-divider">
-    <div class="map-row">
-      <div class="map-category">Coding</div>
-      <div class="map-items">
-        <div class="map-item"><span class="dot" style="background:#10a37f"></span>Codex</div>
-        <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Cursor</div>
-        <div class="map-item"><span class="dot" style="background:#0078d4"></span>GitHub Copilot</div>
-        <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Windsurf</div>
-        <div class="map-item"><span class="dot" style="background:#c96442"></span>Claude Code</div>
-      </div>
-    </div>
+    <div class="map-row"><div class="map-category">Coding</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Cursor</div>
+      <div class="map-item"><span class="dot" style="background:#0078d4"></span>GitHub Copilot</div>
+      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Windsurf</div>
+      <div class="map-item"><span class="dot" style="background:#10a37f"></span>Codex</div>
+      <div class="map-item"><span class="dot" style="background:#c96442"></span>Claude Code</div>
+    </div></div>
     <hr class="map-divider">
-    <div class="map-row">
-      <div class="map-category">Productivity</div>
-      <div class="map-items">
-        <div class="map-item"><span class="dot" style="background:#0078d4"></span>Microsoft Copilot</div>
-        <div class="map-item"><span class="dot" style="background:#4285f4"></span>Gemini in Workspace</div>
-        <div class="map-item"><span class="dot" style="background:#a2a2a7"></span>Apple Intelligence</div>
-        <div class="map-item"><span class="dot" style="background:#ff9500"></span>Amazon Q</div>
-      </div>
-    </div>
+    <div class="map-row"><div class="map-category">Productivity</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#0078d4"></span>Microsoft Copilot</div>
+      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Gemini in Workspace</div>
+      <div class="map-item"><span class="dot" style="background:#a2a2a7"></span>Apple Intelligence</div>
+    </div></div>
     <hr class="map-divider">
-    <div class="map-row">
-      <div class="map-category">Social / Embedded</div>
-      <div class="map-items">
-        <div class="map-item"><span class="dot" style="background:#0082fb"></span>Meta AI (WhatsApp, IG)</div>
-        <div class="map-item"><span class="dot" style="background:#e7e7e7"></span>Grok on X/Twitter</div>
-        <div class="map-item"><span class="dot" style="background:#a2a2a7"></span>Siri (Apple Intelligence)</div>
-      </div>
-    </div>
+    <div class="map-row"><div class="map-category">Social</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#0082fb"></span>Meta AI (WhatsApp, IG, FB)</div>
+      <div class="map-item"><span class="dot" style="background:#c8c8c8"></span>Grok on X</div>
+    </div></div>
     <hr class="map-divider">
-    <div class="map-row">
-      <div class="map-category">Multi-model Routers</div>
-      <div class="map-items">
-        <div class="map-item"><span class="dot" style="background:#9b59b6"></span>OpenRouter</div>
-        <div class="map-item"><span class="dot" style="background:#ff9500"></span>Amazon Bedrock</div>
-        <div class="map-item"><span class="dot" style="background:#4285f4"></span>Google Vertex AI</div>
-        <div class="map-item"><span class="dot" style="background:#0078d4"></span>Azure AI Foundry</div>
-      </div>
-    </div>
+    <div class="map-row"><div class="map-category">Multi-model</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>OpenRouter</div>
+      <div class="map-item"><span class="dot" style="background:#ff9500"></span>Amazon Bedrock</div>
+      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Google Vertex AI</div>
+      <div class="map-item"><span class="dot" style="background:#0078d4"></span>Azure AI Foundry</div>
+    </div></div>
+  </div>
+
+  <div class="map-container">
+    <div class="map-layer-title">Layer 4 — Autonomous Agents</div>
+    <div class="map-layer-sub">AI that acts independently — plans, uses tools, completes tasks without you watching</div>
+    <div class="map-row"><div class="map-category">Personal</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#fa6d9a"></span>OpenClaw</div>
+      <div class="map-item"><span class="dot" style="background:#fa6d9a"></span>Claude Computer Use</div>
+    </div></div>
+    <hr class="map-divider">
+    <div class="map-row"><div class="map-category">Web / Tasks</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#10a37f"></span>OpenAI Operator</div>
+      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Google Mariner</div>
+      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Project Astra</div>
+    </div></div>
+    <hr class="map-divider">
+    <div class="map-row"><div class="map-category">Coding</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#10a37f"></span>Codex (autonomous)</div>
+      <div class="map-item"><span class="dot" style="background:#c96442"></span>Claude Code</div>
+      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Devin</div>
+    </div></div>
+    <hr class="map-divider">
+    <div class="map-row"><div class="map-category">Frameworks</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#c96442"></span>MCP (Anthropic)</div>
+      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>LangChain</div>
+      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>AutoGPT</div>
+      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Google A2A</div>
+    </div></div>
+  </div>
+
+  <div class="map-container">
+    <div class="map-layer-title">Layer 5 — Creative AI</div>
+    <div class="map-layer-sub">A parallel track — image, video, voice, and music generation</div>
+    <div class="map-row"><div class="map-category">Image</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#f5a623"></span>Midjourney</div>
+      <div class="map-item"><span class="dot" style="background:#10a37f"></span>GPT Image</div>
+      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Imagen 3</div>
+      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Stable Diffusion</div>
+      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Adobe Firefly</div>
+    </div></div>
+    <hr class="map-divider">
+    <div class="map-row"><div class="map-category">Video</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#10a37f"></span>Sora 2</div>
+      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Veo 3.1</div>
+      <div class="map-item"><span class="dot" style="background:#e84393"></span>Runway Gen-4</div>
+      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Kling</div>
+      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Pika</div>
+    </div></div>
+    <hr class="map-divider">
+    <div class="map-row"><div class="map-category">Voice / Music</div><div class="map-items">
+      <div class="map-item"><span class="dot" style="background:#27ae60"></span>ElevenLabs</div>
+      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>HeyGen</div>
+      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Suno</div>
+      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Udio</div>
+    </div></div>
   </div>
 </div>
 
-
-<!-- ════════════════════════════════════════════
-     TAB 2 · ORGANISATIONS
-════════════════════════════════════════════ -->
+<!-- ORGS -->
 <div id="tab-orgs" class="section">
-  <p class="section-title">The companies and labs behind the AI</p>
   <div class="orgs-grid" id="orgs-grid"></div>
 </div>
 
-
-<!-- ════════════════════════════════════════════
-     TAB 3 · MODELS
-════════════════════════════════════════════ -->
+<!-- MODELS -->
 <div id="tab-models" class="section">
-  <p class="section-title">The AI brains — what runs under the hood</p>
   <div class="filter-bar" id="model-filters"></div>
-  <div class="models-grid" id="models-grid"></div>
+  <div class="grid3" id="models-grid"></div>
 </div>
 
-
-<!-- ════════════════════════════════════════════
-     TAB 4 · APPS
-════════════════════════════════════════════ -->
+<!-- APPS -->
 <div id="tab-apps" class="section">
-  <p class="section-title">The products you actually use</p>
   <div class="filter-bar" id="app-filters"></div>
-  <div class="apps-grid" id="apps-grid"></div>
+  <div class="grid3" id="apps-grid"></div>
 </div>
 
-
-<!-- ════════════════════════════════════════════
-     TAB 5 · HOW TO STAY CURRENT
-════════════════════════════════════════════ -->
-<div id="tab-track" class="section">
-  <p class="section-title">How to stay on top of it all</p>
-
-  <div class="framework-box">
-    <strong>The problem:</strong> AI is moving faster than any previous technology wave. New models drop every few weeks, apps rebrand, and labs merge or pivot. You don't need to know everything — you need a <strong>lightweight system</strong> that keeps you oriented without being overwhelming.
-  </div>
-
-  <div class="track-grid">
-    <div class="track-card">
-      <div class="track-num">01</div>
-      <div class="track-title">Use one mental map, not a list</div>
-      <div class="track-desc">Always ask: <em>Is this a lab, a model, or an app?</em> That one question cuts through 90% of the confusion. Labs make models. Apps deploy them. You use apps.</div>
-    </div>
-    <div class="track-card">
-      <div class="track-num">02</div>
-      <div class="track-title">Follow one newsletter</div>
-      <div class="track-desc"><strong>The Rundown AI</strong> (therundown.ai) — daily, 5 minutes, covers everything that matters. For deeper dives: <strong>Ben's Bites</strong> or <strong>Import AI</strong> by Jack Clark.</div>
-    </div>
-    <div class="track-card">
-      <div class="track-num">03</div>
-      <div class="track-title">Bookmark one benchmark site</div>
-      <div class="track-desc"><strong>lmarena.ai</strong> (formerly LMSYS Chatbot Arena) — real human head-to-head rankings. More reliable than any lab's self-reported benchmarks.</div>
-    </div>
-    <div class="track-card">
-      <div class="track-num">04</div>
-      <div class="track-title">Know your personal stack</div>
-      <div class="track-desc">Pick 2–3 tools max. One for general chat. One for your work context (coding, writing, research). One for search. Don't chase every new release.</div>
-    </div>
-    <div class="track-card">
-      <div class="track-num">05</div>
-      <div class="track-title">Check pricing quarterly</div>
-      <div class="track-desc">Prices drop fast as compute gets cheaper. Worth checking every 3 months — free tiers expand, new plans emerge. <strong>OpenRouter</strong> is good for API cost comparison.</div>
-    </div>
-    <div class="track-card">
-      <div class="track-num">06</div>
-      <div class="track-title">Ignore most hype</div>
-      <div class="track-desc">Every new model is announced as the "GPT killer." Most aren't. Wait 2 weeks after any launch for independent benchmarks and real user feedback before changing your stack.</div>
-    </div>
-  </div>
-
-  <div class="map-container">
-    <p class="section-title">Suggested personal stacks by role</p>
-    <div class="map-row">
-      <div class="map-category">General / Casual User</div>
-      <div class="map-items">
-        <div class="map-item"><span class="dot" style="background:#10a37f"></span>ChatGPT (free)</div>
-        <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Perplexity (research)</div>
-        <div class="map-item"><span class="dot" style="background:#a2a2a7"></span>Apple Intelligence (phone)</div>
-      </div>
-    </div>
-    <hr class="map-divider">
-    <div class="map-row">
-      <div class="map-category">Office / Business</div>
-      <div class="map-items">
-        <div class="map-item"><span class="dot" style="background:#0078d4"></span>Copilot (if on M365)</div>
-        <div class="map-item"><span class="dot" style="background:#4285f4"></span>Gemini (if on Google)</div>
-        <div class="map-item"><span class="dot" style="background:#c96442"></span>Claude (deep work)</div>
-      </div>
-    </div>
-    <hr class="map-divider">
-    <div class="map-row">
-      <div class="map-category">Developer / Coder</div>
-      <div class="map-items">
-        <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Cursor or Windsurf</div>
-        <div class="map-item"><span class="dot" style="background:#c96442"></span>Claude Sonnet (coding model)</div>
-        <div class="map-item"><span class="dot" style="background:#9b59b6"></span>OpenRouter (API flexibility)</div>
-      </div>
-    </div>
-    <hr class="map-divider">
-    <div class="map-row">
-      <div class="map-category">Researcher / Writer</div>
-      <div class="map-items">
-        <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Perplexity (sources)</div>
-        <div class="map-item"><span class="dot" style="background:#c96442"></span>Claude (analysis & writing)</div>
-        <div class="map-item"><span class="dot" style="background:#e7e7e7"></span>Grok (real-time news)</div>
-      </div>
-    </div>
-    <hr class="map-divider">
-    <div class="map-row">
-      <div class="map-category">Budget Conscious</div>
-      <div class="map-items">
-        <div class="map-item"><span class="dot" style="background:#4f8ef7"></span>DeepSeek (free, capable)</div>
-        <div class="map-item"><span class="dot" style="background:#0082fb"></span>Meta AI (free via WhatsApp)</div>
-        <div class="map-item"><span class="dot" style="background:#10a37f"></span>ChatGPT free tier</div>
-      </div>
-    </div>
-  </div>
+<!-- AGENTS -->
+<div id="tab-agents" class="section">
+  <div class="section-note">Autonomous agents don't wait for instructions — they plan, act, use tools, and complete tasks on their own. The key distinction: a chatbot responds, an agent executes. This is the fastest-moving category in AI right now.</div>
+  <div class="grid3" id="agents-grid"></div>
 </div>
 
+<!-- CREATIVE -->
+<div id="tab-creative" class="section">
+  <div class="section-note">A parallel track running alongside language AI — generating images, video, voice, and music. Often overlooked in LLM discussions but equally transformative. Most major labs now ship both a language model and a creative model.</div>
+  <div class="grid3" id="creative-grid"></div>
+</div>
 
 <div class="updated">Last updated March 2026 · AI Landscape Reference Guide</div>
 
 <script>
-// ─── Data ───────────────────────────────────────────────────
 const orgs = [
-  {
-    name: "OpenAI", flag: "🇺🇸 San Francisco", color: "#10a37f",
-    tagline: "The company that started the modern AI era with ChatGPT in 2022. Now the most-used AI provider worldwide, backed by Microsoft.",
-    models: ["GPT-5.2", "o3/o4 reasoning", "Codex", "DALL-E / GPT Image", "Whisper"],
-    apps: ["ChatGPT", "Codex agent", "Sora (video)"],
-    focus: ["General AI", "Reasoning", "Multimodal", "Agents"],
-    founded: "2015", type: "Private (Microsoft-backed)"
-  },
-  {
-    name: "Anthropic", flag: "🇺🇸 San Francisco", color: "#c96442",
-    tagline: "Founded by ex-OpenAI researchers focused on AI safety. Makes Claude — widely regarded as the best model for coding and long-form reasoning.",
-    models: ["Claude Opus 4.6", "Claude Sonnet 4.6", "Claude Haiku 4.5"],
-    apps: ["Claude.ai", "Claude Code (CLI)", "Claude in Chrome / Excel / PowerPoint"],
-    focus: ["Safety", "Coding", "Long context", "Analysis"],
-    founded: "2021", type: "Private (Amazon-backed)"
-  },
-  {
-    name: "Google DeepMind", flag: "🇺🇸 Mountain View", color: "#4285f4",
-    tagline: "Google's merged AI lab (DeepMind + Google Brain). Builds Gemini and integrates AI across Google's entire product suite.",
-    models: ["Gemini 2.5 Pro", "Gemini 2.5 Flash", "Gemini Nano", "Imagen 3"],
-    apps: ["Gemini app", "AI Overviews", "Gemini in Gmail/Docs/Sheets"],
-    focus: ["Google Workspace", "Search", "Science", "Multimodal"],
-    founded: "2023 (merged)", type: "Subsidiary of Alphabet"
-  },
-  {
-    name: "Meta AI", flag: "🇺🇸 Menlo Park", color: "#0082fb",
-    tagline: "Meta's AI division. Uniquely committed to open-weight models (Llama) that anyone can download and run — embedded in 3B+ social app users.",
-    models: ["Llama 4 Scout", "Llama 4 Maverick", "Llama 4 Behemoth"],
-    apps: ["Meta AI (WhatsApp, Instagram, FB, Messenger)", "meta.ai"],
-    focus: ["Open source", "Social AI", "On-device", "Multilingual"],
-    founded: "2023", type: "Division of Meta"
-  },
-  {
-    name: "xAI", flag: "🇺🇸 Austin", color: "#c8c8c8",
-    tagline: "Elon Musk's AI lab. Makes Grok, deeply integrated into X (Twitter). Known for real-time data access and low hallucination rates.",
-    models: ["Grok 3", "Grok 3 Mini"],
-    apps: ["Grok app", "Grok on X"],
-    focus: ["Real-time data", "Social media", "Coding"],
-    founded: "2023", type: "Private (Elon Musk)"
-  },
-  {
-    name: "Microsoft Research", flag: "🇺🇸 Redmond", color: "#0078d4",
-    tagline: "Microsoft doesn't build its own frontier LLM — it partners deeply with OpenAI and deploys AI across Office 365, GitHub, Bing, and Azure.",
-    models: ["Phi-4 (small model)", "Uses OpenAI models"],
-    apps: ["Microsoft Copilot", "GitHub Copilot", "Bing AI", "Azure AI Foundry"],
-    focus: ["Enterprise", "Office productivity", "Developer tools"],
-    founded: "1975", type: "Public (NASDAQ: MSFT)"
-  },
-  {
-    name: "Mistral AI", flag: "🇫🇷 Paris", color: "#f77f00",
-    tagline: "Europe's leading AI lab. Founded by ex-DeepMind & Meta researchers. Strong open-weight models, multilingual, privacy-focused, government partnerships.",
-    models: ["Mistral Large 3", "Mixtral 8x22B", "Codestral", "Mistral Embed"],
-    apps: ["Le Chat (consumer app)", "La Plateforme (API)"],
-    focus: ["Open source", "Multilingual", "EU sovereignty", "Enterprise"],
-    founded: "2023", type: "Private (€6B valuation)"
-  },
-  {
-    name: "DeepSeek", flag: "🇨🇳 Hangzhou", color: "#4f8ef7",
-    tagline: "Chinese AI lab that shocked the industry with frontier-quality models at near-zero cost. Open-weight. Major data sovereignty considerations for non-Chinese users.",
-    models: ["DeepSeek R2", "DeepSeek V3", "DeepSeek Coder"],
-    apps: ["DeepSeek chat (web/app)", "API"],
-    focus: ["Cost efficiency", "Open weights", "Coding", "Reasoning"],
-    founded: "2023", type: "Private (Chinese)"
-  },
-  {
-    name: "Alibaba (Qwen)", flag: "🇨🇳 Hangzhou", color: "#ff6a00",
-    tagline: "Alibaba's AI research arm. Qwen3 series is highly competitive on benchmarks at very low API cost. Open weights available on Hugging Face.",
-    models: ["Qwen3-Omni", "Qwen3-Coder", "Qwen3-72B"],
-    apps: ["Tongyi Qianwen (China)", "API via Alibaba Cloud"],
-    focus: ["Open weights", "Multimodal", "Low cost", "Code"],
-    founded: "2023", type: "Division of Alibaba Group"
-  },
-  {
-    name: "Apple", flag: "🇺🇸 Cupertino", color: "#a2a2a7",
-    tagline: "Apple builds AI that runs on-device for maximum privacy. Apple Intelligence is baked into every iPhone, iPad, and Mac — no subscription required.",
-    models: ["Apple Foundation Models (on-device)", "Gemini Nano (on-device)"],
-    apps: ["Apple Intelligence", "Siri", "Writing Tools"],
-    focus: ["Privacy", "On-device", "Integration", "Consumer devices"],
-    founded: "1976", type: "Public (NASDAQ: AAPL)"
-  }
+  {name:"OpenAI",flag:"🇺🇸 San Francisco",color:"#10a37f",tagline:"Started the modern AI era with ChatGPT in 2022. The most-used AI provider worldwide. Leads in product breadth, ecosystem size, and consumer reach.",models:["GPT-5.2","o3/o4 reasoning","Codex","GPT Image","Whisper"],apps:["ChatGPT","Codex agent","Sora 2","Operator"],focus:["General AI","Reasoning","Agents","Multimodal"],founded:"2015",type:"Private (Microsoft-backed)"},
+  {name:"Anthropic",flag:"🇺🇸 San Francisco",color:"#c96442",tagline:"Founded by ex-OpenAI researchers. Safety-first philosophy. Claude leads coding benchmarks. Invented MCP — the protocol becoming the standard for connecting AI agents to tools.",models:["Claude Opus 4.6","Claude Sonnet 4.6","Claude Haiku 4.5"],apps:["Claude.ai","Claude Code","Claude in Chrome / Excel / PowerPoint"],focus:["Safety","Coding","Long context","Agent protocols"],founded:"2021",type:"Private (Amazon-backed)"},
+  {name:"Google DeepMind",flag:"🇺🇸 Mountain View",color:"#4285f4",tagline:"Google's merged AI lab (DeepMind + Google Brain). Builds Gemini and leads on context window size, multimodal research, and integration across Google's 3B+ user products.",models:["Gemini 2.5 Pro","Gemini 2.5 Flash","Gemini Nano","Veo 3.1","Imagen 3"],apps:["Gemini app","AI Overviews","Gemini in Workspace","Mariner","Astra"],focus:["Google ecosystem","Search","Science","Video AI"],founded:"2023 (merged)",type:"Subsidiary of Alphabet"},
+  {name:"Meta AI",flag:"🇺🇸 Menlo Park",color:"#0082fb",tagline:"Playing a different game from everyone else — releasing powerful models as open weights that anyone can download, run, and fine-tune. Embedded in 3B+ social app users via Meta AI.",models:["Llama 4 Scout","Llama 4 Maverick","Llama 4 Behemoth"],apps:["Meta AI (WhatsApp, Instagram, FB, Messenger)","meta.ai"],focus:["Open source","Social AI","On-device","Multilingual"],founded:"2023",type:"Division of Meta"},
+  {name:"xAI",flag:"🇺🇸 Austin",color:"#c8c8c8",tagline:"Elon Musk's AI lab. Grok is the only major AI with real-time access to X/Twitter data. Lowest reported hallucination rate among major models. Growing fast in coding.",models:["Grok 3","Grok 3 Mini"],apps:["Grok app","Grok on X"],focus:["Real-time data","Social","Coding","Low hallucination"],founded:"2023",type:"Private (Elon Musk)"},
+  {name:"Microsoft",flag:"🇺🇸 Redmond",color:"#0078d4",tagline:"Doesn't build its own frontier LLM — partners with OpenAI and deploys AI across Office 365, GitHub, Bing, and Azure. Largest enterprise AI footprint of any company.",models:["Phi-4 (small/edge)","Uses OpenAI models"],apps:["Microsoft Copilot","GitHub Copilot","Bing AI","Azure AI Foundry"],focus:["Enterprise","Office productivity","Developer tools","Edge AI"],founded:"1975",type:"Public (NASDAQ: MSFT)"},
+  {name:"Mistral AI",flag:"🇫🇷 Paris",color:"#f77f00",tagline:"Europe's leading AI lab. Built by ex-DeepMind and Meta researchers. Strong open-weight models, multilingual capabilities, and EU data sovereignty focus.",models:["Mistral Large 3","Mixtral 8x22B","Codestral"],apps:["Le Chat (consumer)","La Plateforme (API)"],focus:["Open source","Multilingual","EU sovereignty","Enterprise"],founded:"2023",type:"Private (€6B valuation)"},
+  {name:"DeepSeek",flag:"🇨🇳 Hangzhou",color:"#4f8ef7",tagline:"Shocked the industry with frontier-quality models at near-zero cost. Open-weight. Best performance-to-price ratio in the market. Note: data sovereignty considerations for enterprise use.",models:["DeepSeek R2","DeepSeek V3","DeepSeek Coder"],apps:["DeepSeek chat","API"],focus:["Cost efficiency","Open weights","Reasoning","Coding"],founded:"2023",type:"Private (Chinese lab)"},
+  {name:"Alibaba (Qwen)",flag:"🇨🇳 Hangzhou",color:"#ff6a00",tagline:"Alibaba's AI division. Qwen3 is one of the most capable open-weight model families — text, image, audio, video in one model. Ultra-low API pricing to compete with DeepSeek.",models:["Qwen3-Omni","Qwen3-Coder","Qwen3-72B"],apps:["Tongyi Qianwen (China)","Alibaba Cloud API"],focus:["Open weights","Omnimodal","Low cost"],founded:"2023",type:"Division of Alibaba"},
+  {name:"Apple",flag:"🇺🇸 Cupertino",color:"#a2a2a7",tagline:"Runs AI on-device for maximum privacy. Apple Intelligence is on every iPhone, iPad, and Mac at no extra cost. Private Cloud Compute handles tasks too complex for the device.",models:["Apple Foundation Models (on-device)","Gemini Nano"],apps:["Apple Intelligence","Siri","Writing Tools"],focus:["Privacy","On-device","Consumer","Zero friction"],founded:"1976",type:"Public (NASDAQ: AAPL)"},
+  {name:"ElevenLabs",flag:"🇺🇸 New York",color:"#27ae60",tagline:"The dominant voice AI company. Hyper-realistic voice cloning and text-to-speech in 32 languages. Used by podcasters, filmmakers, game studios, and enterprises for dubbing at scale.",models:["ElevenLabs v3","Turbo v2.5"],apps:["ElevenLabs Studio","API","Mobile app"],focus:["Voice cloning","TTS","Dubbing","Localisation"],founded:"2022",type:"Private ($3B+ valuation)"},
+  {name:"Midjourney",flag:"🇺🇸 San Francisco",color:"#f5a623",tagline:"The most popular AI image generator. Unmatched aesthetic quality. Operates entirely through Discord with no open API. Highly opinionated style — you work with it, not around it.",models:["Midjourney v7","Niji (anime style)"],apps:["Discord bot","midjourney.com"],focus:["Art generation","Aesthetics","Creative tools"],founded:"2022",type:"Private (independent, profitable)"},
+  {name:"Runway",flag:"🇺🇸 New York",color:"#e84393",tagline:"The leading independent AI video lab. Gen-4 produces the most controllable AI video in the industry. Heavily used in professional film production and by content creators.",models:["Gen-4","Gen-4 Turbo"],apps:["Runway Studio","API"],focus:["Video generation","Film","Controllability"],founded:"2018",type:"Private ($4B+ valuation)"},
 ];
 
 const models = [
-  { by: "OpenAI", name: "GPT-5.2", color: "#10a37f", type: "Flagship", desc: "OpenAI's main general-purpose model. Best for everyday tasks, creative writing, coding, and reasoning. Multimodal.", specs: ["Multimodal", "Web search", "Code", "Vision", "Voice"], highlight: "Best all-rounder" },
-  { by: "OpenAI", name: "GPT-5.3-Codex", color: "#10a37f", type: "Coding", desc: "Specialised agentic coding model. Runs autonomously in sandboxes, writes features, fixes bugs, opens PRs.", specs: ["Agentic", "Multi-file", "Autonomous", "25% faster"], highlight: "Best coding agent" },
-  { by: "OpenAI", name: "o3 / o4 (reasoning)", color: "#10a37f", type: "Reasoning", desc: "Slow-thinking 'chain of thought' models. Best for math, science, complex logic. Takes longer but far more accurate.", specs: ["Extended thinking", "Math", "Science", "Logic"], highlight: null },
-  { by: "OpenAI", name: "GPT-4o mini", color: "#10a37f", type: "Lightweight", desc: "Fast and cheap. Best for simple tasks, high-volume API use, real-time applications.", specs: ["Fast", "Low cost", "API-friendly"], highlight: null },
-  { by: "Anthropic", name: "Claude Opus 4.6", color: "#c96442", type: "Flagship", desc: "Anthropic's most powerful model. Best for complex analysis, long documents, nuanced reasoning.", specs: ["200K context", "Reasoning", "Analysis", "Long docs"], highlight: null },
-  { by: "Anthropic", name: "Claude Sonnet 4.6", color: "#c96442", type: "Balanced", desc: "Best coding benchmarks (SWE-bench 72.7%). The model GitHub chose for Copilot's coding agent. Excellent balance of speed and intelligence.", specs: ["SWE-bench #1", "Coding", "Fast", "200K context"], highlight: "Best for coding" },
-  { by: "Anthropic", name: "Claude Haiku 4.5", color: "#c96442", type: "Lightweight", desc: "Ultra-fast and cost-effective. Designed for high-volume, lightweight tasks.", specs: ["Ultra fast", "Low cost", "API"], highlight: null },
-  { by: "Google", name: "Gemini 2.5 Pro", color: "#4285f4", type: "Flagship", desc: "Google's best model. Industry-leading 1M token context window. Strong on multimodal tasks and Workspace integration.", specs: ["1M context", "Multimodal", "Workspace", "Search"], highlight: "Largest context" },
-  { by: "Google", name: "Gemini 2.5 Flash", color: "#4285f4", type: "Balanced", desc: "Faster, cheaper Gemini for everyday use. Still multimodal with a very large context window.", specs: ["Fast", "Multimodal", "Low cost"], highlight: null },
-  { by: "Meta", name: "Llama 4 Maverick", color: "#0082fb", type: "Open-weight", desc: "Meta's main workhorse. 400B total parameters. Multimodal. Open-weight: you can download and run it yourself.", specs: ["Open-weight", "Multimodal", "400B params", "Free"], highlight: "Open source" },
-  { by: "Meta", name: "Llama 4 Scout", color: "#0082fb", type: "Open-weight", desc: "Lightweight Llama 4 with a stunning 10 million token context window. Ideal for processing massive documents.", specs: ["10M context", "Lightweight", "Open-weight"], highlight: "10M tokens" },
-  { by: "xAI", name: "Grok 3", color: "#c8c8c8", type: "Flagship", desc: "xAI's main model. Unique real-time X/Twitter data access. Lowest hallucination rate (~4%) among major models.", specs: ["Real-time data", "Low hallucination", "Coding", "X integration"], highlight: "Lowest hallucination" },
-  { by: "Mistral", name: "Mistral Large 3", color: "#f77f00", type: "Flagship", desc: "Mistral's frontier model. Multilingual, multimodal, open-weight. Competes with GPT-4o and Gemini 2.", specs: ["Open-weight", "Multilingual", "Multimodal", "EU-hosted"], highlight: null },
-  { by: "DeepSeek", name: "DeepSeek R2", color: "#4f8ef7", type: "Reasoning", desc: "Frontier reasoning model at near-zero cost. Comparable to o3 on many benchmarks for a fraction of the price. Open-weight.", specs: ["Open-weight", "Cheap API", "Reasoning", "Coding"], highlight: "Best value" },
-  { by: "Alibaba", name: "Qwen3-Omni", color: "#ff6a00", type: "Flagship", desc: "Alibaba's top model. Text, image, audio, video — all in one. Competitive with GPT-4o. Very low API pricing.", specs: ["Omnimodal", "Low cost", "Open-weight"], highlight: null },
+  {by:"OpenAI",name:"GPT-5.2",color:"#10a37f",type:"Flagship",desc:"OpenAI's main general-purpose model. Best all-rounder for everyday tasks, writing, coding, and reasoning. Multimodal — text, image, voice.",specs:["Multimodal","Web search","Code","Vision","Voice"],hl:"Best all-rounder"},
+  {by:"OpenAI",name:"GPT-5.3-Codex",color:"#10a37f",type:"Coding Agent",desc:"Autonomous coding model. Runs in cloud sandboxes, writes features, fixes bugs, opens pull requests independently. 25% faster than predecessor.",specs:["Agentic","Multi-file","Autonomous","Sandboxed","Fast"],hl:"Best coding agent"},
+  {by:"OpenAI",name:"o3 / o4",color:"#10a37f",type:"Reasoning",desc:"Slow-thinking chain-of-thought models. Best for math, science, complex logic. Takes longer but far more accurate than standard models.",specs:["Extended thinking","Math","Science","Logic","Self-correcting"],hl:null},
+  {by:"OpenAI",name:"GPT-4o mini",color:"#10a37f",type:"Lightweight",desc:"Fast and cheap. Best for simple tasks, high-volume API use, and real-time applications where cost matters.",specs:["Fast","Low cost","API-friendly"],hl:null},
+  {by:"Anthropic",name:"Claude Sonnet 4.6",color:"#c96442",type:"Balanced",desc:"Top coding benchmarks (SWE-bench 72.7%). The model GitHub chose for Copilot's coding agent. Best balance of speed and intelligence.",specs:["SWE-bench #1","Coding","200K context","Fast"],hl:"Best for coding"},
+  {by:"Anthropic",name:"Claude Opus 4.6",color:"#c96442",type:"Flagship",desc:"Anthropic's most powerful model. Best for complex analysis, long documents, nuanced multi-step reasoning.",specs:["200K context","Deep reasoning","Analysis","Long docs"],hl:null},
+  {by:"Anthropic",name:"Claude Haiku 4.5",color:"#c96442",type:"Lightweight",desc:"Ultra-fast and cost-effective. Designed for high-volume, lightweight tasks and API integration.",specs:["Ultra fast","Low cost","API"],hl:null},
+  {by:"Google",name:"Gemini 2.5 Pro",color:"#4285f4",type:"Flagship",desc:"Industry-leading 1M token context window — can process an entire book in one prompt. Strong multimodal and Workspace integration.",specs:["1M context","Multimodal","Workspace","Search"],hl:"Largest context"},
+  {by:"Google",name:"Gemini 2.5 Flash",color:"#4285f4",type:"Balanced",desc:"Faster, cheaper Gemini for everyday use. Still multimodal with a very large context window.",specs:["Fast","Multimodal","Low cost"],hl:null},
+  {by:"Meta",name:"Llama 4 Maverick",color:"#0082fb",type:"Open-weight",desc:"Meta's main workhorse. 400B parameters. Multimodal. Open-weight — download, run, and fine-tune it yourself. Free.",specs:["Open-weight","Multimodal","400B params","Free to use"],hl:"Open source"},
+  {by:"Meta",name:"Llama 4 Scout",color:"#0082fb",type:"Open-weight",desc:"Lightweight Llama with a 10 million token context window — the largest of any model available.",specs:["10M context","Lightweight","Open-weight"],hl:"10M tokens"},
+  {by:"xAI",name:"Grok 3",color:"#c8c8c8",type:"Flagship",desc:"Real-time access to X/Twitter data. Lowest hallucination rate (~4%) among major models. Strong on coding and current events.",specs:["Real-time data","~4% hallucination","Coding","X integration"],hl:"Lowest hallucination"},
+  {by:"Mistral",name:"Mistral Large 3",color:"#f77f00",type:"Flagship",desc:"Open-weight, multilingual, multimodal. EU-hosted. Competes with GPT-4o and Gemini 2 on most benchmarks.",specs:["Open-weight","Multilingual","EU-hosted","Multimodal"],hl:null},
+  {by:"DeepSeek",name:"DeepSeek R2",color:"#4f8ef7",type:"Reasoning",desc:"Frontier reasoning at near-zero cost. Comparable to o3 on many benchmarks. Open-weight with a very low API price.",specs:["Open-weight","~$0.50/M tokens","Reasoning","Coding"],hl:"Best value"},
+  {by:"Alibaba",name:"Qwen3-Omni",color:"#ff6a00",type:"Flagship",desc:"Text, image, audio, video — all in one model. Competitive with GPT-4o. Ultra-low API pricing.",specs:["Omnimodal","Low cost","Open-weight"],hl:null},
 ];
 
 const apps = [
-  { icon: "💬", name: "ChatGPT", by: "OpenAI", powered: "GPT-5.2 / o4", category: "General Chat", color: "#10a37f",
-    desc: "The world's most-used AI app. General chat, writing, image generation, voice, web search. Works for almost everything.",
-    price: "Free / $20 / $200/mo", ease: 5, bestFor: "General use, image gen, broad tasks" },
-  { icon: "🟣", name: "Claude.ai", by: "Anthropic", powered: "Claude Sonnet / Opus", category: "General Chat", color: "#c96442",
-    desc: "Known for thoughtful, high-quality responses. Best for writing, analysis, and long documents. Excellent for coding tasks.",
-    price: "Free / $20 / $100–200/mo", ease: 5, bestFor: "Writing, coding, analysis, long docs" },
-  { icon: "✨", name: "Gemini app", by: "Google", powered: "Gemini 2.5 Pro", category: "General Chat", color: "#4285f4",
-    desc: "Google's AI assistant. Deeply connected to Gmail, Drive, and Docs for Google Workspace users.",
-    price: "Free / $19.99/mo (Pro)", ease: 5, bestFor: "Google Workspace users" },
-  { icon: "⚡", name: "Grok", by: "xAI", powered: "Grok 3", category: "General Chat", color: "#c8c8c8",
-    desc: "AI built into X (Twitter). Real-time information access. Growing fast in coding and general reasoning capabilities.",
-    price: "Free / $30/mo (SuperGrok)", ease: 4, bestFor: "Real-time info, X users" },
-  { icon: "🔍", name: "Perplexity", by: "Independent", powered: "GPT / Claude / Gemini", category: "Research", color: "#9b59b6",
-    desc: "AI-powered search engine. Every answer comes with cited sources. Best for research where accuracy and attribution matter.",
-    price: "Free / $20/mo (Pro)", ease: 5, bestFor: "Research, fact-checking, sourced answers" },
-  { icon: "🪟", name: "Microsoft Copilot", by: "Microsoft", powered: "GPT-5.2 (via OpenAI)", category: "Productivity", color: "#0078d4",
-    desc: "AI inside Word, Excel, PowerPoint, Outlook, and Teams. Summarizes documents, writes emails, analyzes spreadsheets.",
-    price: "~$30/user/mo add-on to M365", ease: 5, bestFor: "Microsoft 365 users, office work" },
-  { icon: "🔵", name: "Gemini in Workspace", by: "Google", powered: "Gemini 2.5 Pro", category: "Productivity", color: "#4285f4",
-    desc: "AI inside Gmail, Google Docs, Sheets, Slides. Drafts emails, summarizes threads, analyzes spreadsheet data.",
-    price: "Included in Google AI Pro ($19.99/mo)", ease: 5, bestFor: "Google Workspace power users" },
-  { icon: "🍎", name: "Apple Intelligence", by: "Apple", powered: "Apple Foundation + ChatGPT", category: "On-device / Privacy", color: "#a2a2a7",
-    desc: "AI running on your iPhone, iPad, or Mac. Writing tools, smart notifications, photo editing, smarter Siri. No subscription needed.",
-    price: "Free (included with device)", ease: 5, bestFor: "iPhone/Mac users, privacy-first" },
-  { icon: "🦙", name: "Meta AI", by: "Meta", powered: "Llama 4", category: "Social / Embedded", color: "#0082fb",
-    desc: "Built into WhatsApp, Instagram, Facebook, and Messenger. Quick Q&A, image generation, planning help inside apps you already use.",
-    price: "Free", ease: 5, bestFor: "Casual use, already in your social apps" },
-  { icon: "🐟", name: "DeepSeek", by: "DeepSeek", powered: "DeepSeek R2 / V3", category: "General Chat", color: "#4f8ef7",
-    desc: "Powerful reasoning and coding at near-zero cost. Open-source. Popular with developers and budget-conscious users.",
-    price: "Free (consumer). Ultra-cheap API", ease: 5, bestFor: "Budget users, developers, coding" },
-  { icon: "🌊", name: "Le Chat", by: "Mistral AI", powered: "Mistral Large 3", category: "General Chat", color: "#f77f00",
-    desc: "Mistral's consumer chat app. Multilingual, privacy-friendly, EU-hosted. Good alternative for European users or businesses.",
-    price: "Free / €14.99/mo (Pro)", ease: 4, bestFor: "EU users, multilingual, data sovereignty" },
-  { icon: "🖥️", name: "Cursor", by: "Anysphere", powered: "Claude / GPT / Gemini", category: "Coding", color: "#9b59b6",
-    desc: "AI-native code editor (fork of VS Code). Deep codebase understanding, multi-file edits, autonomous coding agents.",
-    price: "Free / $20 / $60 / $200/mo", ease: 3, bestFor: "Developers, complex codebases" },
-  { icon: "🐙", name: "GitHub Copilot", by: "GitHub / Microsoft", powered: "Claude Sonnet + GPT", category: "Coding", color: "#0078d4",
-    desc: "AI coding assistant as a plugin inside VS Code, JetBrains, etc. Inline completions, chat, PR descriptions, agent mode.",
-    price: "Free (2K/mo) / $10 / $39/mo", ease: 4, bestFor: "Developers staying in their existing editor" },
-  { icon: "🌬️", name: "Windsurf", by: "Cognition", powered: "Multiple models", category: "Coding", color: "#9b59b6",
-    desc: "AI coding agent that tracks your entire session context — clipboard, terminal, edits. 'Flow' paradigm remembers everything you do.",
-    price: "~$15/mo", ease: 3, bestFor: "Developers wanting session-aware AI coding" },
-  { icon: "⚙️", name: "Claude Code", by: "Anthropic", powered: "Claude Sonnet 4.6", category: "Coding", color: "#c96442",
-    desc: "Command-line coding agent. Runs in your terminal, edits files, runs tests, commits code autonomously. No GUI.",
-    price: "Pay-per-use (API billing)", ease: 2, bestFor: "Power developers, terminal users" },
+  {icon:"💬",name:"ChatGPT",by:"OpenAI",powered:"GPT-5.2 / o4",category:"General Chat",desc:"The world's most-used AI app. Writing, image generation, voice, web search, coding, plugins. Works for almost everything.",price:"Free / $20 / $200/mo",ease:5,bestFor:"General use, broadest feature set"},
+  {icon:"🟣",name:"Claude.ai",by:"Anthropic",powered:"Claude Sonnet / Opus",category:"General Chat",desc:"Thoughtful, high-quality responses. Best for writing, analysis, long documents, and coding tasks.",price:"Free / $20 / $100–200/mo",ease:5,bestFor:"Writing, coding, analysis, long docs"},
+  {icon:"✨",name:"Gemini",by:"Google",powered:"Gemini 2.5 Pro",category:"General Chat",desc:"Google's AI assistant. Deeply integrated with Gmail, Drive, and Docs. Best for users already in Google's ecosystem.",price:"Free / $19.99/mo",ease:5,bestFor:"Google Workspace users"},
+  {icon:"⚡",name:"Grok",by:"xAI",powered:"Grok 3",category:"General Chat",desc:"Built into X. Real-time information access. Growing fast in coding and general reasoning.",price:"Free / $30/mo (SuperGrok)",ease:4,bestFor:"Real-time info, X/Twitter users"},
+  {icon:"🔥",name:"Le Chat",by:"Mistral AI",powered:"Mistral Large 3",category:"General Chat",desc:"Mistral's consumer app. Multilingual, privacy-friendly, EU-hosted. Good choice for European users.",price:"Free / €14.99/mo",ease:4,bestFor:"EU users, multilingual tasks"},
+  {icon:"🐟",name:"DeepSeek",by:"DeepSeek",powered:"DeepSeek R2/V3",category:"General Chat",desc:"Powerful reasoning and coding at near-zero cost. Open-source. Very popular with developers.",price:"Free. Ultra-cheap API.",ease:5,bestFor:"Budget users, developers, coding"},
+  {icon:"🔍",name:"Perplexity",by:"Independent",powered:"GPT / Claude / Gemini",category:"Research",desc:"AI-powered search engine. Every answer cites sources. Best for research where accuracy and attribution matter.",price:"Free / $20/mo",ease:5,bestFor:"Research, fact-checking, sourced answers"},
+  {icon:"🪟",name:"Microsoft Copilot",by:"Microsoft",powered:"GPT-5.2",category:"Productivity",desc:"AI inside Word, Excel, PowerPoint, Outlook, and Teams. Summarizes, drafts emails, analyzes spreadsheets.",price:"~$30/user/mo (M365 add-on)",ease:5,bestFor:"Microsoft 365 users"},
+  {icon:"🔵",name:"Gemini in Workspace",by:"Google",powered:"Gemini 2.5 Pro",category:"Productivity",desc:"AI inside Gmail, Docs, Sheets, and Slides. Drafts emails, summarizes threads, analyzes data inline.",price:"Included in Google AI Pro ($19.99/mo)",ease:5,bestFor:"Google Workspace power users"},
+  {icon:"🍎",name:"Apple Intelligence",by:"Apple",powered:"Apple Foundation + ChatGPT",category:"On-device",desc:"Runs on your iPhone, iPad, Mac. Writing tools, smart notifications, photo editing. No subscription — free with device.",price:"Free with Apple device",ease:5,bestFor:"iPhone/Mac users, privacy-first"},
+  {icon:"🦙",name:"Meta AI",by:"Meta",powered:"Llama 4",category:"Social",desc:"Built into WhatsApp, Instagram, Facebook, Messenger. Quick answers, image gen — inside apps you already use.",price:"Free",ease:5,bestFor:"Casual use, social apps"},
+  {icon:"🖥️",name:"Cursor",by:"Anysphere",powered:"Claude / GPT / Gemini",category:"Coding",desc:"AI-native code editor (fork of VS Code). Deep codebase understanding, multi-file edits, autonomous agents.",price:"Free / $20 / $60 / $200/mo",ease:3,bestFor:"Developers, complex codebases"},
+  {icon:"🐙",name:"GitHub Copilot",by:"GitHub / Microsoft",powered:"Claude Sonnet + GPT",category:"Coding",desc:"AI coding plugin inside VS Code, JetBrains, Xcode. Completions, chat, PR descriptions, agent mode.",price:"Free / $10 / $39/mo",ease:4,bestFor:"Developers in existing editors"},
+  {icon:"🌬️",name:"Windsurf",by:"Cognition",powered:"Multiple models",category:"Coding",desc:"Session-aware coding agent. Tracks clipboard, terminal, and edits to understand your intent in real time.",price:"~$15/mo",ease:3,bestFor:"Session-aware AI coding"},
+  {icon:"⚙️",name:"Claude Code",by:"Anthropic",powered:"Claude Sonnet 4.6",category:"Coding",desc:"Terminal-based coding agent. Reads your codebase, edits files, runs tests, commits — from the command line.",price:"Pay-per-use (API)",ease:2,bestFor:"Power developers, terminal users"},
 ];
 
-// ─── Render Orgs ────────────────────────────────────────────
+const agents = [
+  {type:"Personal Agent",name:"OpenClaw",desc:"Self-hosted personal AI agent you talk to via WhatsApp, Telegram, or Signal. Manages email, calendar, flights, daily briefings — all from your phone. Runs on your hardware, data stays local. Bring your own API key (supports Claude, GPT, Gemini, Llama).",specs:["Self-hosted","WhatsApp/Telegram","Email + Calendar","Open source","Privacy-first"],hot:"Most personal"},
+  {type:"Web Agent",name:"OpenAI Operator",desc:"OpenAI's autonomous web agent. Operates a real browser — books restaurants, fills forms, completes multi-step web tasks without you watching. Available on Pro plan.",specs:["Browser control","Multi-step tasks","Web automation","Pro plan"],hot:"Most capable web agent"},
+  {type:"Web Agent",name:"Google Mariner / Astra",desc:"Google's dual agent projects. Mariner operates Chrome autonomously. Astra is Google's real-time multimodal agent — sees your screen, hears you, and acts across Google's ecosystem in real time.",specs:["Browser control","Real-time","Multimodal","Google ecosystem"],hot:null},
+  {type:"Coding Agent",name:"Devin (Cognition)",desc:"The first AI software engineer — given a task, Devin plans, writes, tests, debugs, and deploys code entirely autonomously in a sandboxed environment. Enterprise-focused.",specs:["Fully autonomous","End-to-end","Sandboxed","Enterprise"],hot:"First AI SWE"},
+  {type:"Coding Agent",name:"Claude Code",desc:"Anthropic's terminal-based coding agent. Reads your entire codebase, edits files, runs tests, commits code — all from your command line with no GUI required.",specs:["Terminal-based","Full codebase access","Commits code","Pay-per-use"],hot:null},
+  {type:"Personal Agent",name:"Claude Computer Use",desc:"Claude controlling your actual desktop — clicking buttons, typing, navigating software. Currently in beta. Signals the direction: AI operating any app the way a human would.",specs:["Desktop control","Any app","Beta","Anthropic API"],hot:"Beta frontier"},
+  {type:"Framework / Protocol",name:"MCP (Model Context Protocol)",desc:"Anthropic's open protocol that lets AI agents connect to external tools — email, calendar, Slack, databases, any API. Becoming the industry standard 'USB port' for AI agents. Now under Linux Foundation governance.",specs:["Open standard","Tool connections","Multi-agent","Linux Foundation"],hot:"Industry standard"},
+  {type:"Framework",name:"LangChain / LangGraph",desc:"The most widely used framework for building AI agent pipelines. Developers chain models, tools, and memory together into complex autonomous workflows. Supports all major models.",specs:["Open source","Multi-agent","Memory","All models"],hot:null},
+  {type:"Framework",name:"AutoGPT",desc:"One of the earliest autonomous agent frameworks. Give an AI a goal, watch it plan and execute steps independently using web search, file management, and code execution.",specs:["Open source","Goal-driven","Self-directing","Community"],hot:null},
+];
+
+const creative = [
+  {type:"Image Generation",name:"Midjourney v7",desc:"The gold standard for AI art. Unmatched aesthetic quality and depth. Operates entirely through Discord — no open API. Highly opinionated style that rewards learning its language.",specs:["Discord-based","Best aesthetics","No API","$10–$120/mo"],hot:"Best image quality"},
+  {type:"Image Generation",name:"GPT Image (OpenAI)",desc:"OpenAI's image generator inside ChatGPT. More literal and instructable than Midjourney. Great for product shots, UI mockups, illustrations, and precise prompt-following.",specs:["Inside ChatGPT","Instructable","DALL-E successor","Multimodal"],hot:null},
+  {type:"Image Generation",name:"Stable Diffusion",desc:"Open-source image model. Run entirely on your own hardware. Thousands of community fine-tunes available. Maximum control and privacy. Requires technical setup.",specs:["Open source","Self-hosted","Fine-tunable","Free"],hot:"Most customisable"},
+  {type:"Image Generation",name:"Adobe Firefly",desc:"Adobe's AI image generator, built into Photoshop and Illustrator. Trained only on licensed content — commercially safe for professional work.",specs:["In Photoshop","Commercially safe","Professional","Creative Cloud"],hot:"Commercially safe"},
+  {type:"Video Generation",name:"Sora 2 (OpenAI)",desc:"OpenAI's video model. Generates high-quality, physically coherent video from text or images. Treats video as 'world simulation'. Available to Pro plan users.",specs:["Text-to-video","Physics coherent","Pro plan","Storyboard mode"],hot:null},
+  {type:"Video Generation",name:"Veo 3.1 (Google)",desc:"Google DeepMind's video model. Cinematic quality, strong motion coherence, integrated into Google's creative tools.",specs:["Cinematic","Google ecosystem","High resolution","Motion coherence"],hot:null},
+  {type:"Video Generation",name:"Runway Gen-4",desc:"The leading independent video AI. Most controllable video generation available — hold elements constant while changing others. Standard tool in professional film and content production.",specs:["Most controllable","Professional grade","Motion brush","$12–$76/mo"],hot:"Most controllable"},
+  {type:"Voice AI",name:"ElevenLabs",desc:"Hyper-realistic voice cloning and text-to-speech in 32 languages. Clone any voice in seconds. Used by podcasters, filmmakers, game studios, and enterprises for dubbing and narration.",specs:["Voice cloning","32 languages","Dubbing","API"],hot:"Best voice quality"},
+  {type:"Voice AI",name:"HeyGen",desc:"AI video avatars with lip-synced voice. Upload a video of yourself, generate a digital twin that reads any script. Popular for multilingual content and personalised video at scale.",specs:["AI avatars","Lip sync","Video dubbing","Multilingual"],hot:null},
+  {type:"Music Generation",name:"Suno",desc:"Text-to-music AI. Describe a song in plain language — get a full production with vocals, instruments, and mastering in seconds. Free tier available.",specs:["Full songs","Vocals + instruments","Text-to-music","Free tier"],hot:"Best music gen"},
+  {type:"Music Generation",name:"Udio",desc:"Suno's main competitor. Similar text-to-music capabilities with more fine-grained control over style, genre, and song structure.",specs:["Full songs","Style control","Genre control","Free tier"],hot:null},
+];
+
 function renderOrgs() {
-  const grid = document.getElementById('orgs-grid');
-  grid.innerHTML = orgs.map(o => `
-    <div class="org-card" style="--org-color: ${o.color}">
-      <div class="org-header">
-        <div class="org-name">${o.name}</div>
-        <div class="org-flag">${o.flag}</div>
-      </div>
+  document.getElementById('orgs-grid').innerHTML = orgs.map(o=>`
+    <div class="org-card" style="--org-color:${o.color}">
+      <div class="org-header"><div class="org-name">${o.name}</div><div class="org-flag">${o.flag}</div></div>
       <div class="org-tagline">${o.tagline}</div>
       <div class="org-meta">
-        <div class="meta-row">
-          <div class="meta-label">Models</div>
-          <div class="tags">${o.models.map(m => `<span class="tag colored">${m}</span>`).join('')}</div>
-        </div>
-        <div class="meta-row">
-          <div class="meta-label">Apps</div>
-          <div class="tags">${o.apps.map(a => `<span class="tag">${a}</span>`).join('')}</div>
-        </div>
-        <div class="meta-row">
-          <div class="meta-label">Focus</div>
-          <div class="tags">${o.focus.map(f => `<span class="tag">${f}</span>`).join('')}</div>
-        </div>
-        <div class="meta-row" style="margin-top:4px">
-          <div class="meta-label">Type</div>
-          <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);padding-top:4px">${o.type} · Founded ${o.founded}</div>
-        </div>
+        <div class="meta-row"><div class="meta-label">Models</div><div class="tags">${o.models.map(m=>`<span class="tag colored">${m}</span>`).join('')}</div></div>
+        <div class="meta-row"><div class="meta-label">Apps</div><div class="tags">${o.apps.map(a=>`<span class="tag">${a}</span>`).join('')}</div></div>
+        <div class="meta-row"><div class="meta-label">Focus</div><div class="tags">${o.focus.map(f=>`<span class="tag">${f}</span>`).join('')}</div></div>
+        <div class="meta-row"><div class="meta-label">Type</div><div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);padding-top:4px">${o.type} · Founded ${o.founded}</div></div>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-// ─── Render Models ───────────────────────────────────────────
-let activeModelFilter = 'All';
 function renderModels(filter) {
-  const grid = document.getElementById('models-grid');
-  const filtered = filter === 'All' ? models : models.filter(m => m.by === filter);
-  grid.innerHTML = filtered.map(m => `
+  const list = filter==='All' ? models : models.filter(m=>m.by===filter);
+  document.getElementById('models-grid').innerHTML = list.map(m=>`
     <div class="model-card" data-type="${m.type}">
       <div class="model-by"><span class="org-dot" style="background:${m.color}"></span>${m.by}</div>
       <div class="model-name">${m.name}</div>
       <div class="model-desc">${m.desc}</div>
-      <div class="model-specs">
-        ${m.highlight ? `<span class="spec highlight">★ ${m.highlight}</span>` : ''}
-        ${m.specs.map(s => `<span class="spec">${s}</span>`).join('')}
+      <div class="specs">
+        ${m.hl?`<span class="spec hl">★ ${m.hl}</span>`:''}
+        ${m.specs.map(s=>`<span class="spec">${s}</span>`).join('')}
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 function renderModelFilters() {
-  const labs = ['All', ...new Set(models.map(m => m.by))];
-  const bar = document.getElementById('model-filters');
-  bar.innerHTML = labs.map(l => `
-    <button class="filter-btn ${l === 'All' ? 'active' : ''}" onclick="setModelFilter('${l}', this)">${l}</button>
-  `).join('');
+  const labs=['All',...new Set(models.map(m=>m.by))];
+  document.getElementById('model-filters').innerHTML=labs.map(l=>
+    `<button class="fbtn ${l==='All'?'active':''}" onclick="setMF('${l}',this)">${l}</button>`).join('');
 }
-
-function setModelFilter(lab, btn) {
-  document.querySelectorAll('#model-filters .filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderModels(lab);
-}
-
-// ─── Render Apps ─────────────────────────────────────────────
-let activeAppFilter = 'All';
-const appCategories = ['All', 'General Chat', 'Research', 'Productivity', 'Coding', 'On-device / Privacy', 'Social / Embedded'];
+function setMF(l,btn){document.querySelectorAll('#model-filters .fbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderModels(l);}
 
 function renderApps(filter) {
-  const grid = document.getElementById('apps-grid');
-  const filtered = filter === 'All' ? apps : apps.filter(a => a.category === filter);
-  grid.innerHTML = filtered.map(a => `
+  const list = filter==='All' ? apps : apps.filter(a=>a.category===filter);
+  document.getElementById('apps-grid').innerHTML = list.map(a=>`
     <div class="app-card">
       <div class="app-header">
         <div class="app-icon">${a.icon}</div>
-        <div>
-          <div class="app-name">${a.name}</div>
-          <div class="app-category">${a.category} · ${a.by}</div>
-        </div>
+        <div><div class="app-name">${a.name}</div><div class="app-cat">${a.category} · ${a.by}</div></div>
       </div>
       <div class="app-desc">${a.desc}</div>
       <div style="margin-bottom:12px">
         <div class="ease-label">Ease of start</div>
-        <div class="stars">${[1,2,3,4,5].map(i => `<div class="star ${i <= a.ease ? 'on' : ''}"></div>`).join('')}</div>
+        <div class="stars">${[1,2,3,4,5].map(i=>`<div class="star ${i<=a.ease?'on':''}"></div>`).join('')}</div>
       </div>
       <div class="app-footer">
         <div>
-          <div class="app-powered" style="margin-bottom:2px">Powered by: ${a.powered}</div>
-          <div class="app-powered">Best for: ${a.bestFor}</div>
+          <div class="app-meta" style="margin-bottom:2px">Powered by: ${a.powered}</div>
+          <div class="app-meta">Best for: ${a.bestFor}</div>
         </div>
         <div class="app-price">${a.price}</div>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 function renderAppFilters() {
-  const bar = document.getElementById('app-filters');
-  bar.innerHTML = appCategories.map(c => `
-    <button class="filter-btn ${c === 'All' ? 'active' : ''}" onclick="setAppFilter('${c}', this)">${c}</button>
-  `).join('');
+  const cats=['All','General Chat','Research','Productivity','Coding','On-device','Social'];
+  document.getElementById('app-filters').innerHTML=cats.map(c=>
+    `<button class="fbtn ${c==='All'?'active':''}" onclick="setAF('${c}',this)">${c}</button>`).join('');
+}
+function setAF(c,btn){document.querySelectorAll('#app-filters .fbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderApps(c);}
+
+function renderList(data, elId, accentVar='var(--accent2)') {
+  document.getElementById(elId).innerHTML = data.map(a=>`
+    <div class="agent-card" style="--accent2:${accentVar}">
+      <div class="agent-type">${a.type}</div>
+      <div class="agent-name">${a.name}</div>
+      <div class="agent-desc">${a.desc}</div>
+      <div class="specs">
+        ${a.hot?`<span class="spec hl2">★ ${a.hot}</span>`:''}
+        ${a.specs.map(s=>`<span class="spec">${s}</span>`).join('')}
+      </div>
+    </div>`).join('');
 }
 
-function setAppFilter(cat, btn) {
-  document.querySelectorAll('#app-filters .filter-btn').forEach(b => b.classList.remove('active'));
+function switchTab(id,btn) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
   btn.classList.add('active');
-  renderApps(cat);
 }
 
-// ─── Tab Switching ───────────────────────────────────────────
-function switchTab(id) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
-  event.target.classList.add('active');
-}
-
-// ─── Init ────────────────────────────────────────────────────
 renderOrgs();
-renderModelFilters();
-renderModels('All');
-renderAppFilters();
-renderApps('All');
+renderModelFilters(); renderModels('All');
+renderAppFilters(); renderApps('All');
+renderList(agents,'agents-grid','#fa6d9a');
+renderList(creative,'creative-grid','#f5a623');
 </script>
 </body>
 </html>
