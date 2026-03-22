@@ -6,477 +6,902 @@
 <title>AI Landscape 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0a0f; --surface: #111118; --surface2: #18181f; --border: #2a2a3a;
-    --text: #e8e8f0; --muted: #6b6b85; --accent: #7c6dfa; --accent2: #fa6d9a;
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:var(--bg); color:var(--text); font-family:'Syne',sans-serif; min-height:100vh; padding:32px 24px 80px; }
-  header { text-align:center; margin-bottom:48px; }
-  .eyebrow { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:3px; color:var(--muted); text-transform:uppercase; margin-bottom:12px; }
-  h1 { font-size:clamp(28px,5vw,48px); font-weight:800; line-height:1.1; background:linear-gradient(135deg,#fff 0%,#8878ff 60%,#fa6d9a 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:12px; }
-  .subtitle { color:var(--muted); font-size:14px; }
-  .tabs { display:flex; gap:6px; justify-content:center; flex-wrap:wrap; margin-bottom:36px; }
-  .tab { font-family:'DM Mono',monospace; font-size:12px; padding:8px 18px; border-radius:100px; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.2s; }
-  .tab:hover { border-color:var(--accent); color:var(--text); }
-  .tab.active { background:var(--accent); border-color:var(--accent); color:#fff; }
-  .section { display:none; }
-  .section.active { display:block; }
-  .framework-box { background:color-mix(in srgb,var(--accent) 8%,transparent); border:1px solid color-mix(in srgb,var(--accent) 25%,transparent); border-radius:14px; padding:18px 22px; margin-bottom:28px; font-size:13px; color:var(--muted); line-height:1.9; }
-  .framework-box strong { color:var(--text); }
-  .map-container { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:28px; margin-bottom:20px; }
-  .map-layer-title { font-size:15px; font-weight:700; margin-bottom:4px; }
-  .map-layer-sub { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); margin-bottom:20px; }
-  .map-row { display:grid; grid-template-columns:130px 1fr; gap:16px; margin-bottom:18px; align-items:start; }
-  .map-category { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; padding-top:8px; line-height:1.4; }
-  .map-items { display:flex; flex-wrap:wrap; gap:8px; }
-  .map-item { display:flex; align-items:center; gap:6px; padding:7px 14px; border-radius:100px; border:1px solid var(--border); background:var(--surface2); font-size:13px; font-weight:600; transition:border-color 0.2s; }
-  .map-item:hover { border-color:var(--accent); }
-  .dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; display:inline-block; }
-  .map-divider { border:none; border-top:1px solid var(--border); margin:2px 0 18px; }
-  .orgs-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; }
-  .org-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; position:relative; overflow:hidden; transition:transform 0.2s,border-color 0.2s; }
-  .org-card:hover { transform:translateY(-2px); border-color:var(--accent); }
-  .org-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--org-color,var(--accent)); }
-  .org-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; }
-  .org-name { font-size:18px; font-weight:700; }
-  .org-flag { font-family:'DM Mono',monospace; font-size:10px; padding:3px 8px; border-radius:100px; border:1px solid var(--border); color:var(--muted); }
-  .org-tagline { font-size:12px; color:var(--muted); margin-bottom:16px; line-height:1.5; }
-  .org-meta { display:flex; flex-direction:column; gap:8px; }
-  .meta-row { display:flex; gap:8px; }
-  .meta-label { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; min-width:60px; padding-top:3px; }
-  .tags { display:flex; flex-wrap:wrap; gap:4px; }
-  .tag { font-family:'DM Mono',monospace; font-size:11px; padding:3px 9px; border-radius:6px; background:var(--surface2); border:1px solid var(--border); color:var(--text); }
-  .tag.colored { background:color-mix(in srgb,var(--org-color,var(--accent)) 15%,transparent); border-color:color-mix(in srgb,var(--org-color,var(--accent)) 40%,transparent); color:var(--org-color,var(--accent)); }
-  .grid3 { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; }
-  .model-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; position:relative; transition:border-color 0.2s; }
-  .model-card:hover { border-color:var(--accent); }
-  .model-card::after { content:attr(data-type); position:absolute; top:14px; right:14px; font-family:'DM Mono',monospace; font-size:10px; padding:3px 8px; border-radius:100px; background:var(--surface2); color:var(--muted); border:1px solid var(--border); }
-  .model-by { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-bottom:4px; letter-spacing:1px; text-transform:uppercase; }
-  .model-name { font-size:16px; font-weight:700; margin-bottom:8px; padding-right:80px; }
-  .model-desc { font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:14px; }
-  .specs { display:flex; flex-wrap:wrap; gap:6px; }
-  .spec { font-family:'DM Mono',monospace; font-size:10px; padding:4px 10px; border-radius:6px; background:var(--surface2); color:var(--muted); }
-  .spec.hl { background:color-mix(in srgb,var(--accent) 15%,transparent); color:var(--accent); border:1px solid color-mix(in srgb,var(--accent) 30%,transparent); }
-  .spec.hl2 { background:color-mix(in srgb,var(--accent2) 15%,transparent); color:var(--accent2); border:1px solid color-mix(in srgb,var(--accent2) 30%,transparent); }
-  .app-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; transition:border-color 0.2s; }
-  .app-card:hover { border-color:var(--accent); }
-  .app-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
-  .app-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; background:var(--surface2); flex-shrink:0; }
-  .app-name { font-size:16px; font-weight:700; }
-  .app-cat { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-top:1px; }
-  .app-desc { font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:14px; }
-  .app-footer { display:flex; justify-content:space-between; align-items:flex-end; }
-  .app-meta { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); }
-  .app-price { font-family:'DM Mono',monospace; font-size:12px; font-weight:500; color:var(--text); }
-  .stars { display:flex; gap:2px; margin-bottom:4px; }
-  .star { width:12px; height:12px; border-radius:2px; background:var(--surface2); }
-  .star.on { background:#f5c518; }
-  .ease-label { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-bottom:2px; }
-  .filter-bar { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:20px; }
-  .fbtn { font-family:'DM Mono',monospace; font-size:11px; padding:5px 14px; border-radius:100px; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.15s; }
-  .fbtn:hover { color:var(--text); border-color:#555; }
-  .fbtn.active { background:var(--surface2); color:var(--text); border-color:#555; }
-  .section-note { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); margin-bottom:20px; line-height:1.8; padding:14px 18px; background:var(--surface); border:1px solid var(--border); border-radius:10px; }
-  .agent-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; transition:border-color 0.2s; position:relative; overflow:hidden; }
-  .agent-card:hover { border-color:var(--accent2); }
-  .agent-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--accent2); opacity:0.5; }
-  .agent-type { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:1px; }
-  .agent-name { font-size:16px; font-weight:700; margin-bottom:8px; }
-  .agent-desc { font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:14px; }
-  .updated { text-align:center; font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); margin-top:48px; padding-top:24px; border-top:1px solid var(--border); }
-  .org-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; vertical-align:middle; }
+:root{--bg:#0a0a0f;--surface:#111118;--surface2:#18181f;--border:#2a2a3a;--text:#e8e8f0;--muted:#6b6b85;--accent:#7c6dfa;--accent2:#fa6d9a;--gold:#f5a623;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;padding:28px 20px 80px;}
+header{text-align:center;margin-bottom:40px;}
+.eyebrow{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:10px;}
+h1{font-size:clamp(26px,5vw,46px);font-weight:800;line-height:1.1;background:linear-gradient(135deg,#fff 0%,#8878ff 60%,#fa6d9a 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px;}
+.subtitle{color:var(--muted);font-size:13px;}
+.tabs{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-bottom:32px;}
+.tab{font-family:'DM Mono',monospace;font-size:11px;padding:7px 16px;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all 0.2s;}
+.tab:hover{border-color:var(--accent);color:var(--text);}
+.tab.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.section{display:none;}
+.section.active{display:block;}
+
+/* MAP */
+.intro-box{background:color-mix(in srgb,var(--accent) 7%,transparent);border:1px solid color-mix(in srgb,var(--accent) 20%,transparent);border-radius:12px;padding:16px 20px;margin-bottom:24px;font-size:13px;color:var(--muted);line-height:2;}
+.intro-box strong{color:var(--text);}
+.pipe{color:var(--border);margin:0 8px;}
+.layer-block{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:16px;}
+.layer-header{display:flex;align-items:baseline;gap:12px;margin-bottom:4px;}
+.layer-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;}
+.layer-title{font-size:16px;font-weight:700;}
+.layer-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:20px;}
+.map-row{display:grid;grid-template-columns:100px 1fr;gap:14px;margin-bottom:14px;align-items:start;}
+.map-cat{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding-top:9px;line-height:1.4;}
+.map-items{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:100px;border:1px solid var(--border);background:var(--surface2);font-size:12px;font-weight:600;transition:all 0.15s;text-decoration:none;color:var(--text);cursor:default;}
+a.chip{cursor:pointer;}
+a.chip:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px);}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block;}
+.divider{border:none;border-top:1px solid var(--border);margin:2px 0 14px;}
+
+/* FILTER BAR */
+.filter-bar{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:18px;}
+.fb{font-family:'DM Mono',monospace;font-size:11px;padding:5px 13px;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all 0.15s;}
+.fb:hover{color:var(--text);border-color:#555;}
+.fb.active{background:var(--surface2);color:var(--text);border-color:#666;}
+
+/* LABS */
+.labs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;}
+.lab-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px;position:relative;overflow:hidden;transition:transform 0.2s,border-color 0.2s;}
+.lab-card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--c) 50%,transparent);}
+.lab-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--c,var(--accent));}
+.lab-card::after{content:'';position:absolute;top:0;right:0;width:100px;height:100px;background:radial-gradient(circle at top right,color-mix(in srgb,var(--c,var(--accent)) 6%,transparent),transparent 70%);pointer-events:none;}
+.lab-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+.lab-name{font-size:19px;font-weight:800;line-height:1.1;}
+.lab-location{font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius:100px;border:1px solid var(--border);color:var(--muted);white-space:nowrap;}
+.badge-row{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+.badge{font-family:'DM Mono',monospace;font-size:10px;padding:3px 9px;border-radius:6px;border:1px solid;}
+.b-type{background:color-mix(in srgb,var(--c,var(--accent)) 10%,transparent);border-color:color-mix(in srgb,var(--c,var(--accent)) 25%,transparent);color:color-mix(in srgb,var(--c,var(--accent)) 90%,#fff);}
+.b-rel{background:var(--surface2);border-color:var(--border);color:var(--muted);}
+.b-year{background:transparent;border-color:var(--border);color:var(--muted);}
+.lab-people{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.person{padding:6px 10px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);}
+.person-name{font-size:12px;font-weight:700;line-height:1.2;}
+.person-role{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-top:1px;}
+.lab-tagline{font-size:12px;color:var(--muted);line-height:1.65;margin-bottom:14px;}
+.lab-rows{display:flex;flex-direction:column;gap:8px;}
+.lab-row{display:flex;gap:8px;align-items:flex-start;}
+.row-lbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;min-width:58px;padding-top:3px;flex-shrink:0;}
+.pills{display:flex;flex-wrap:wrap;gap:4px;}
+.pill{font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text);}
+.pill-c{background:color-mix(in srgb,var(--c,var(--accent)) 10%,transparent);border-color:color-mix(in srgb,var(--c,var(--accent)) 28%,transparent);color:color-mix(in srgb,var(--c,var(--accent)) 90%,#fff);}
+.controversy{margin-top:12px;padding:9px 12px;border-radius:8px;background:color-mix(in srgb,#fa6d9a 7%,transparent);border:1px solid color-mix(in srgb,#fa6d9a 18%,transparent);font-size:11px;color:color-mix(in srgb,#fa6d9a 85%,#fff);line-height:1.6;}
+.controversy::before{content:'⚡ ';}
+.lab-url{display:inline-flex;align-items:center;gap:4px;margin-top:12px;font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);text-decoration:none;opacity:0.7;transition:opacity 0.15s;}
+.lab-url:hover{opacity:1;}
+
+/* MODELS */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;}
+.model-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;transition:border-color 0.2s;}
+.model-card:hover{border-color:var(--accent);}
+.model-type-badge{position:absolute;top:14px;right:14px;font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius:100px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
+.model-origin{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:4px;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:5px;}
+.odot{display:inline-block;width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.model-name{font-size:17px;font-weight:800;margin-bottom:8px;padding-right:90px;line-height:1.2;}
+.model-desc{font-size:12px;color:var(--muted);line-height:1.65;margin-bottom:12px;}
+.model-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.mtag{font-family:'DM Mono',monospace;font-size:10px;padding:3px 9px;border-radius:6px;background:var(--surface2);color:var(--muted);}
+.mtag.star{background:color-mix(in srgb,var(--accent) 13%,transparent);color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 28%,transparent);}
+.model-box{margin-top:8px;font-size:11px;color:var(--muted);line-height:1.6;padding:8px 10px;background:var(--surface2);border-radius:8px;}
+.model-box strong{color:var(--text);}
+.model-box+.model-box{margin-top:5px;}
+
+/* APPS */
+.apps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;}
+.app-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;transition:border-color 0.2s;position:relative;overflow:hidden;}
+.app-card:hover{border-color:var(--accent);}
+.app-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);opacity:0.3;}
+/* header row */
+.app-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
+.app-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--surface2);flex-shrink:0;margin-top:2px;}
+.app-head-text{flex:1;min-width:0;}
+.app-name{font-size:17px;font-weight:800;line-height:1.1;margin-bottom:3px;}
+.app-meta-line{display:flex;flex-wrap:wrap;gap:5px;align-items:center;}
+.app-cat-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);}
+/* badges row */
+.app-badges{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;}
+.abadge{font-family:'DM Mono',monospace;font-size:10px;padding:3px 9px;border-radius:100px;border:1px solid;white-space:nowrap;}
+.ab-first{border-color:color-mix(in srgb,var(--accent) 40%,transparent);color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent);}
+.ab-third{border-color:color-mix(in srgb,var(--gold) 40%,transparent);color:var(--gold);background:color-mix(in srgb,var(--gold) 8%,transparent);}
+.ab-embed{border-color:color-mix(in srgb,#4285f4 40%,transparent);color:#4285f4;background:color-mix(in srgb,#4285f4 8%,transparent);}
+.ab-agg{border-color:color-mix(in srgb,#9b59b6 40%,transparent);color:#9b59b6;background:color-mix(in srgb,#9b59b6 8%,transparent);}
+.ab-device{border-color:color-mix(in srgb,#a2a2a7 40%,transparent);color:#a2a2a7;background:color-mix(in srgb,#a2a2a7 8%,transparent);}
+.ab-agent{border-color:color-mix(in srgb,#fa6d9a 40%,transparent);color:#fa6d9a;background:color-mix(in srgb,#fa6d9a 8%,transparent);}
+/* desc */
+.app-desc{font-size:12px;color:var(--muted);line-height:1.65;margin-bottom:12px;}
+/* inline info row */
+.app-info-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.app-info-pill{background:var(--surface2);border-radius:8px;padding:7px 10px;flex:1;min-width:140px;}
+.aip-key{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
+.aip-val{font-size:11px;font-weight:600;line-height:1.4;color:var(--text);}
+.aip-warn{font-family:'DM Mono',monospace;font-size:10px;color:#fa6d9a;margin-top:3px;line-height:1.4;}
+/* use cases */
+.uc-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.uc-list{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+.uc-item{font-size:11px;color:var(--muted);line-height:1.5;padding:6px 10px;background:var(--surface2);border-radius:7px;}
+.uc-item strong{color:var(--text);}
+/* tags */
+.app-tags{display:flex;flex-wrap:wrap;gap:5px;}
+.app-tag{font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius:6px;background:var(--surface2);color:var(--muted);}
+.app-note{margin-top:10px;padding:9px 12px;border-radius:8px;background:color-mix(in srgb,#fa6d9a 7%,transparent);border:1px solid color-mix(in srgb,#fa6d9a 18%,transparent);font-size:11px;color:color-mix(in srgb,#fa6d9a 85%,#fff);line-height:1.5;}
+
+.updated{text-align:center;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-top:48px;padding-top:22px;border-top:1px solid var(--border);}
+@media(max-width:600px){.map-row{grid-template-columns:1fr;}.app-info-row{flex-direction:column;}}
 </style>
 </head>
 <body>
-
 <header>
   <div class="eyebrow">Reference Guide · March 2026</div>
   <h1>The AI Landscape</h1>
-  <p class="subtitle">Who makes what, what it does, and how it all connects</p>
+  <p class="subtitle">Labs build models. Models power apps. Apps serve you.</p>
 </header>
-
 <nav class="tabs">
-  <button class="tab active" onclick="switchTab('map',this)">🗺 Landscape Map</button>
-  <button class="tab" onclick="switchTab('orgs',this)">🏢 Organisations</button>
-  <button class="tab" onclick="switchTab('models',this)">🧠 Models</button>
-  <button class="tab" onclick="switchTab('apps',this)">📱 Apps & Tools</button>
-  <button class="tab" onclick="switchTab('agents',this)">🤖 Autonomous Agents</button>
-  <button class="tab" onclick="switchTab('creative',this)">🎨 Creative AI</button>
+  <button class="tab active" onclick="show('map',this)">🗺 Map</button>
+  <button class="tab" onclick="show('labs',this)">🔬 Labs</button>
+  <button class="tab" onclick="show('models',this)">🧠 Models</button>
+  <button class="tab" onclick="show('apps',this)">📱 Apps & Tools</button>
 </nav>
 
-<!-- MAP -->
+<!-- ═══ MAP ═══ -->
 <div id="tab-map" class="section active">
-  <div class="framework-box">
-    <strong>Labs</strong> build the raw intelligence — models. &nbsp;·&nbsp;
-    <strong>Models</strong> are the trained brains: versioned, benchmarked, deployed via API. &nbsp;·&nbsp;
-    <strong>Apps</strong> are what you open. &nbsp;·&nbsp;
-    <strong>Agents</strong> act autonomously on your behalf. &nbsp;·&nbsp;
-    <strong>Creative tools</strong> generate images, video, voice. &nbsp;·&nbsp;
-    You interact with apps — not models.
+  <div class="intro-box">
+    <strong>Labs</strong> research and train the AI — they own the intelligence.<span class="pipe">·</span>
+    <strong>Models</strong> are the trained brains: versioned, benchmarked, accessed via API.<span class="pipe">·</span>
+    <strong>Apps & Tools</strong> are built on top of models — what you open and use.<span class="pipe">·</span>
+    Click any lab name to visit their homepage.
   </div>
 
-  <div class="map-container">
-    <div class="map-layer-title">Layer 1 — Labs</div>
-    <div class="map-layer-sub">The organisations that research, train, and own the AI</div>
-    <div class="map-row"><div class="map-category">US</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#10a37f"></span>OpenAI</div>
-      <div class="map-item"><span class="dot" style="background:#c96442"></span>Anthropic</div>
-      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Google DeepMind</div>
-      <div class="map-item"><span class="dot" style="background:#0082fb"></span>Meta AI</div>
-      <div class="map-item"><span class="dot" style="background:#c8c8c8"></span>xAI</div>
-      <div class="map-item"><span class="dot" style="background:#0078d4"></span>Microsoft Research</div>
+  <div class="layer-block">
+    <div class="layer-header"><span class="layer-num">Layer 01</span><span class="layer-title">Labs</span></div>
+    <div class="layer-sub">Every organisation actively building and training significant AI models</div>
+    <div class="map-row"><div class="map-cat">US</div><div class="map-items">
+      <a class="chip" href="https://openai.com" target="_blank"><span class="dot" style="background:#10a37f"></span>OpenAI</a>
+      <a class="chip" href="https://anthropic.com" target="_blank"><span class="dot" style="background:#c96442"></span>Anthropic</a>
+      <a class="chip" href="https://deepmind.google" target="_blank"><span class="dot" style="background:#4285f4"></span>Google DeepMind</a>
+      <a class="chip" href="https://ai.meta.com" target="_blank"><span class="dot" style="background:#0082fb"></span>Meta AI Research</a>
+      <a class="chip" href="https://x.ai" target="_blank"><span class="dot" style="background:#c8c8c8"></span>xAI</a>
+      <a class="chip" href="https://machinelearning.apple.com" target="_blank"><span class="dot" style="background:#a2a2a7"></span>Apple ML</a>
+      <a class="chip" href="https://midjourney.com" target="_blank"><span class="dot" style="background:#f5a623"></span>Midjourney</a>
+      <a class="chip" href="https://runwayml.com" target="_blank"><span class="dot" style="background:#e84393"></span>Runway</a>
+      <a class="chip" href="https://elevenlabs.io" target="_blank"><span class="dot" style="background:#27ae60"></span>ElevenLabs</a>
+      <a class="chip" href="https://suno.com" target="_blank"><span class="dot" style="background:#9b59b6"></span>Suno</a>
     </div></div>
-    <hr class="map-divider">
-    <div class="map-row"><div class="map-category">Europe</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#f77f00"></span>Mistral AI 🇫🇷</div>
-      <div class="map-item"><span class="dot" style="background:#e63946"></span>Aleph Alpha 🇩🇪</div>
+    <hr class="divider">
+    <div class="map-row"><div class="map-cat">Europe</div><div class="map-items">
+      <a class="chip" href="https://mistral.ai" target="_blank"><span class="dot" style="background:#f77f00"></span>Mistral AI 🇫🇷</a>
+      <a class="chip" href="https://aleph-alpha.com" target="_blank"><span class="dot" style="background:#6c63ff"></span>Aleph Alpha 🇩🇪</a>
+      <a class="chip" href="https://kyutai.org" target="_blank"><span class="dot" style="background:#e76f51"></span>Kyutai 🇫🇷</a>
+      <a class="chip" href="https://silo.ai" target="_blank"><span class="dot" style="background:#00b4d8"></span>Silo AI 🇫🇮</a>
+      <a class="chip" href="https://stability.ai" target="_blank"><span class="dot" style="background:#7f8c8d"></span>Stability AI 🇬🇧</a>
     </div></div>
-    <hr class="map-divider">
-    <div class="map-row"><div class="map-category">China</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#4f8ef7"></span>DeepSeek</div>
-      <div class="map-item"><span class="dot" style="background:#ff6a00"></span>Alibaba (Qwen)</div>
-      <div class="map-item"><span class="dot" style="background:#eb3434"></span>Baidu (ERNIE)</div>
-    </div></div>
-    <hr class="map-divider">
-    <div class="map-row"><div class="map-category">Device / Cloud</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#a2a2a7"></span>Apple</div>
-      <div class="map-item"><span class="dot" style="background:#ff9500"></span>Amazon</div>
-    </div></div>
-  </div>
-
-  <div class="map-container">
-    <div class="map-layer-title">Layer 2 — Models</div>
-    <div class="map-layer-sub">The actual brains — trained, versioned, accessed via API or baked into apps</div>
-    <div class="map-row"><div class="map-category">OpenAI</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#10a37f"></span>GPT-5.2</div>
-      <div class="map-item"><span class="dot" style="background:#10a37f"></span>GPT-5.3-Codex</div>
-      <div class="map-item"><span class="dot" style="background:#10a37f"></span>o3 / o4 reasoning</div>
-      <div class="map-item"><span class="dot" style="background:#10a37f"></span>Whisper (voice)</div>
-    </div></div>
-    <hr class="map-divider">
-    <div class="map-row"><div class="map-category">Anthropic</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#c96442"></span>Claude Opus 4.6</div>
-      <div class="map-item"><span class="dot" style="background:#c96442"></span>Claude Sonnet 4.6</div>
-      <div class="map-item"><span class="dot" style="background:#c96442"></span>Claude Haiku 4.5</div>
-    </div></div>
-    <hr class="map-divider">
-    <div class="map-row"><div class="map-category">Google</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Gemini 2.5 Pro</div>
-      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Gemini 2.5 Flash</div>
-      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Veo 3.1 (video)</div>
-      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Imagen 3 (image)</div>
-    </div></div>
-    <hr class="map-divider">
-    <div class="map-row"><div class="map-category">Others</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#0082fb"></span>Llama 4 (Meta)</div>
-      <div class="map-item"><span class="dot" style="background:#c8c8c8"></span>Grok 3 (xAI)</div>
-      <div class="map-item"><span class="dot" style="background:#f77f00"></span>Mistral Large 3</div>
-      <div class="map-item"><span class="dot" style="background:#4f8ef7"></span>DeepSeek R2</div>
-      <div class="map-item"><span class="dot" style="background:#ff6a00"></span>Qwen3 (Alibaba)</div>
+    <hr class="divider">
+    <div class="map-row"><div class="map-cat">China</div><div class="map-items">
+      <a class="chip" href="https://deepseek.com" target="_blank"><span class="dot" style="background:#4f8ef7"></span>DeepSeek</a>
+      <a class="chip" href="https://qwenlm.github.io" target="_blank"><span class="dot" style="background:#ff6a00"></span>Alibaba — Qwen</a>
+      <a class="chip" href="https://research.baidu.com" target="_blank"><span class="dot" style="background:#eb3434"></span>Baidu Research</a>
     </div></div>
   </div>
 
-  <div class="map-container">
-    <div class="map-layer-title">Layer 3 — Apps</div>
-    <div class="map-layer-sub">Interfaces built on top of models — what you actually open</div>
-    <div class="map-row"><div class="map-category">General Chat</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#10a37f"></span>ChatGPT</div>
-      <div class="map-item"><span class="dot" style="background:#c96442"></span>Claude.ai</div>
-      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Gemini</div>
-      <div class="map-item"><span class="dot" style="background:#c8c8c8"></span>Grok</div>
-      <div class="map-item"><span class="dot" style="background:#f77f00"></span>Le Chat</div>
-      <div class="map-item"><span class="dot" style="background:#4f8ef7"></span>DeepSeek</div>
+  <div class="layer-block">
+    <div class="layer-header"><span class="layer-num">Layer 02</span><span class="layer-title">Models</span></div>
+    <div class="layer-sub">The trained brains — versioned, benchmarked, deployed via API or embedded into apps</div>
+    <div class="map-row"><div class="map-cat">OpenAI</div><div class="map-items">
+      <div class="chip"><span class="dot" style="background:#10a37f"></span>GPT-5.3 Instant</div>
+      <div class="chip"><span class="dot" style="background:#10a37f"></span>GPT-5.4 Thinking</div>
+      <div class="chip"><span class="dot" style="background:#10a37f"></span>GPT-5.3-Codex</div>
+      <div class="chip"><span class="dot" style="background:#10a37f"></span>GPT-5.4 mini/nano</div>
     </div></div>
-    <hr class="map-divider">
-    <div class="map-row"><div class="map-category">Research</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Perplexity</div>
-      <div class="map-item"><span class="dot" style="background:#4285f4"></span>AI Overviews</div>
+    <hr class="divider">
+    <div class="map-row"><div class="map-cat">Anthropic</div><div class="map-items">
+      <div class="chip"><span class="dot" style="background:#c96442"></span>Claude Opus 4.6</div>
+      <div class="chip"><span class="dot" style="background:#c96442"></span>Claude Sonnet 4.6</div>
+      <div class="chip"><span class="dot" style="background:#c96442"></span>Claude Haiku 4.5</div>
     </div></div>
-    <hr class="map-divider">
-    <div class="map-row"><div class="map-category">Coding</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Cursor</div>
-      <div class="map-item"><span class="dot" style="background:#0078d4"></span>GitHub Copilot</div>
-      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Windsurf</div>
-      <div class="map-item"><span class="dot" style="background:#10a37f"></span>Codex</div>
-      <div class="map-item"><span class="dot" style="background:#c96442"></span>Claude Code</div>
+    <hr class="divider">
+    <div class="map-row"><div class="map-cat">Google</div><div class="map-items">
+      <div class="chip"><span class="dot" style="background:#4285f4"></span>Gemini 2.5 Pro</div>
+      <div class="chip"><span class="dot" style="background:#4285f4"></span>Gemini 2.5 Flash</div>
+      <div class="chip"><span class="dot" style="background:#4285f4"></span>Veo 3.1 (video)</div>
+      <div class="chip"><span class="dot" style="background:#4285f4"></span>Imagen 3 (image)</div>
     </div></div>
-    <hr class="map-divider">
-    <div class="map-row"><div class="map-category">Productivity</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#0078d4"></span>Microsoft Copilot</div>
-      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Gemini in Workspace</div>
-      <div class="map-item"><span class="dot" style="background:#a2a2a7"></span>Apple Intelligence</div>
-    </div></div>
-    <hr class="map-divider">
-    <div class="map-row"><div class="map-category">Social</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#0082fb"></span>Meta AI (WhatsApp, IG, FB)</div>
-      <div class="map-item"><span class="dot" style="background:#c8c8c8"></span>Grok on X</div>
-    </div></div>
-    <hr class="map-divider">
-    <div class="map-row"><div class="map-category">Multi-model</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>OpenRouter</div>
-      <div class="map-item"><span class="dot" style="background:#ff9500"></span>Amazon Bedrock</div>
-      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Google Vertex AI</div>
-      <div class="map-item"><span class="dot" style="background:#0078d4"></span>Azure AI Foundry</div>
+    <hr class="divider">
+    <div class="map-row"><div class="map-cat">Others</div><div class="map-items">
+      <div class="chip"><span class="dot" style="background:#0082fb"></span>Llama 4 (Meta)</div>
+      <div class="chip"><span class="dot" style="background:#c8c8c8"></span>Grok 3 (xAI)</div>
+      <div class="chip"><span class="dot" style="background:#f77f00"></span>Mistral Large 3</div>
+      <div class="chip"><span class="dot" style="background:#4f8ef7"></span>DeepSeek R2</div>
+      <div class="chip"><span class="dot" style="background:#ff6a00"></span>Qwen3 (Alibaba)</div>
+      <div class="chip"><span class="dot" style="background:#6c63ff"></span>Luminous (Aleph Alpha)</div>
+      <div class="chip"><span class="dot" style="background:#eb3434"></span>ERNIE 4 (Baidu)</div>
+      <div class="chip"><span class="dot" style="background:#a2a2a7"></span>Apple Foundation</div>
     </div></div>
   </div>
 
-  <div class="map-container">
-    <div class="map-layer-title">Layer 4 — Autonomous Agents</div>
-    <div class="map-layer-sub">AI that acts independently — plans, uses tools, completes tasks without you watching</div>
-    <div class="map-row"><div class="map-category">Personal</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#fa6d9a"></span>OpenClaw</div>
-      <div class="map-item"><span class="dot" style="background:#fa6d9a"></span>Claude Computer Use</div>
+  <div class="layer-block">
+    <div class="layer-header"><span class="layer-num">Layer 03</span><span class="layer-title">Apps & Tools</span></div>
+    <div class="layer-sub">Everything built on models — organised by what they do</div>
+    <div class="map-row"><div class="map-cat">General Chat</div><div class="map-items">
+      <div class="chip"><span class="dot" style="background:#10a37f"></span>ChatGPT</div>
+      <div class="chip"><span class="dot" style="background:#c96442"></span>Claude.ai</div>
+      <div class="chip"><span class="dot" style="background:#4285f4"></span>Gemini</div>
+      <div class="chip"><span class="dot" style="background:#c8c8c8"></span>Grok</div>
+      <div class="chip"><span class="dot" style="background:#f77f00"></span>Le Chat</div>
+      <div class="chip"><span class="dot" style="background:#4f8ef7"></span>DeepSeek</div>
     </div></div>
-    <hr class="map-divider">
-    <div class="map-row"><div class="map-category">Web / Tasks</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#10a37f"></span>OpenAI Operator</div>
-      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Google Mariner</div>
-      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Project Astra</div>
+    <hr class="divider">
+    <div class="map-row"><div class="map-cat">Research</div><div class="map-items">
+      <div class="chip"><span class="dot" style="background:#9b59b6"></span>Perplexity</div>
+      <div class="chip"><span class="dot" style="background:#4285f4"></span>AI Overviews</div>
+      <div class="chip"><span class="dot" style="background:#c8c8c8"></span>Grok on X</div>
     </div></div>
-    <hr class="map-divider">
-    <div class="map-row"><div class="map-category">Coding</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#10a37f"></span>Codex (autonomous)</div>
-      <div class="map-item"><span class="dot" style="background:#c96442"></span>Claude Code</div>
-      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Devin</div>
+    <hr class="divider">
+    <div class="map-row"><div class="map-cat">Personal Assist.</div><div class="map-items">
+      <div class="chip"><span class="dot" style="background:#a2a2a7"></span>Siri</div>
+      <div class="chip"><span class="dot" style="background:#4285f4"></span>Gemini Live</div>
+      <div class="chip"><span class="dot" style="background:#ff9500"></span>Alexa+</div>
+      <div class="chip"><span class="dot" style="background:#1428a0"></span>Samsung Bixby</div>
+      <div class="chip"><span class="dot" style="background:#0078d4"></span>Copilot (Windows)</div>
+      <div class="chip"><span class="dot" style="background:#fa6d9a"></span>OpenClaw</div>
     </div></div>
-    <hr class="map-divider">
-    <div class="map-row"><div class="map-category">Frameworks</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#c96442"></span>MCP (Anthropic)</div>
-      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>LangChain</div>
-      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>AutoGPT</div>
-      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Google A2A</div>
+    <hr class="divider">
+    <div class="map-row"><div class="map-cat">Productivity</div><div class="map-items">
+      <div class="chip"><span class="dot" style="background:#0078d4"></span>Microsoft 365 Copilot</div>
+      <div class="chip"><span class="dot" style="background:#4285f4"></span>Gemini in Workspace</div>
+      <div class="chip"><span class="dot" style="background:#a2a2a7"></span>Apple Writing Tools</div>
     </div></div>
-  </div>
-
-  <div class="map-container">
-    <div class="map-layer-title">Layer 5 — Creative AI</div>
-    <div class="map-layer-sub">A parallel track — image, video, voice, and music generation</div>
-    <div class="map-row"><div class="map-category">Image</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#f5a623"></span>Midjourney</div>
-      <div class="map-item"><span class="dot" style="background:#10a37f"></span>GPT Image</div>
-      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Imagen 3</div>
-      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Stable Diffusion</div>
-      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Adobe Firefly</div>
+    <hr class="divider">
+    <div class="map-row"><div class="map-cat">Coding</div><div class="map-items">
+      <div class="chip"><span class="dot" style="background:#9b59b6"></span>Cursor</div>
+      <div class="chip"><span class="dot" style="background:#0078d4"></span>GitHub Copilot</div>
+      <div class="chip"><span class="dot" style="background:#9b59b6"></span>Windsurf</div>
+      <div class="chip"><span class="dot" style="background:#10a37f"></span>Codex</div>
+      <div class="chip"><span class="dot" style="background:#c96442"></span>Claude Code</div>
     </div></div>
-    <hr class="map-divider">
-    <div class="map-row"><div class="map-category">Video</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#10a37f"></span>Sora 2</div>
-      <div class="map-item"><span class="dot" style="background:#4285f4"></span>Veo 3.1</div>
-      <div class="map-item"><span class="dot" style="background:#e84393"></span>Runway Gen-4</div>
-      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Kling</div>
-      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Pika</div>
+    <hr class="divider">
+    <div class="map-row"><div class="map-cat">Agents</div><div class="map-items">
+      <div class="chip"><span class="dot" style="background:#10a37f"></span>Operator</div>
+      <div class="chip"><span class="dot" style="background:#4285f4"></span>Mariner</div>
+      <div class="chip"><span class="dot" style="background:#9b59b6"></span>Devin</div>
+      <div class="chip"><span class="dot" style="background:#fa6d9a"></span>OpenClaw</div>
     </div></div>
-    <hr class="map-divider">
-    <div class="map-row"><div class="map-category">Voice / Music</div><div class="map-items">
-      <div class="map-item"><span class="dot" style="background:#27ae60"></span>ElevenLabs</div>
-      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>HeyGen</div>
-      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Suno</div>
-      <div class="map-item"><span class="dot" style="background:#9b59b6"></span>Udio</div>
+    <hr class="divider">
+    <div class="map-row"><div class="map-cat">Creative</div><div class="map-items">
+      <div class="chip"><span class="dot" style="background:#f5a623"></span>Midjourney</div>
+      <div class="chip"><span class="dot" style="background:#10a37f"></span>Sora 2</div>
+      <div class="chip"><span class="dot" style="background:#e84393"></span>Runway Gen-4</div>
+      <div class="chip"><span class="dot" style="background:#27ae60"></span>ElevenLabs</div>
+      <div class="chip"><span class="dot" style="background:#9b59b6"></span>Suno</div>
     </div></div>
   </div>
 </div>
 
-<!-- ORGS -->
-<div id="tab-orgs" class="section">
-  <div class="orgs-grid" id="orgs-grid"></div>
+<!-- ═══ LABS ═══ -->
+<div id="tab-labs" class="section">
+  <div class="filter-bar" id="lab-filters"></div>
+  <div class="labs-grid" id="labs-grid"></div>
 </div>
 
-<!-- MODELS -->
+<!-- ═══ MODELS ═══ -->
 <div id="tab-models" class="section">
   <div class="filter-bar" id="model-filters"></div>
-  <div class="grid3" id="models-grid"></div>
+  <div class="cards-grid" id="models-grid"></div>
 </div>
 
-<!-- APPS -->
+<!-- ═══ APPS ═══ -->
 <div id="tab-apps" class="section">
   <div class="filter-bar" id="app-filters"></div>
-  <div class="grid3" id="apps-grid"></div>
-</div>
-
-<!-- AGENTS -->
-<div id="tab-agents" class="section">
-  <div class="section-note">Autonomous agents don't wait for instructions — they plan, act, use tools, and complete tasks on their own. The key distinction: a chatbot responds, an agent executes. This is the fastest-moving category in AI right now.</div>
-  <div class="grid3" id="agents-grid"></div>
-</div>
-
-<!-- CREATIVE -->
-<div id="tab-creative" class="section">
-  <div class="section-note">A parallel track running alongside language AI — generating images, video, voice, and music. Often overlooked in LLM discussions but equally transformative. Most major labs now ship both a language model and a creative model.</div>
-  <div class="grid3" id="creative-grid"></div>
+  <div class="apps-grid" id="apps-grid"></div>
 </div>
 
 <div class="updated">Last updated March 2026 · AI Landscape Reference Guide</div>
 
 <script>
-const orgs = [
-  {name:"OpenAI",flag:"🇺🇸 San Francisco",color:"#10a37f",tagline:"Started the modern AI era with ChatGPT in 2022. The most-used AI provider worldwide. Leads in product breadth, ecosystem size, and consumer reach.",models:["GPT-5.2","o3/o4 reasoning","Codex","GPT Image","Whisper"],apps:["ChatGPT","Codex agent","Sora 2","Operator"],focus:["General AI","Reasoning","Agents","Multimodal"],founded:"2015",type:"Private (Microsoft-backed)"},
-  {name:"Anthropic",flag:"🇺🇸 San Francisco",color:"#c96442",tagline:"Founded by ex-OpenAI researchers. Safety-first philosophy. Claude leads coding benchmarks. Invented MCP — the protocol becoming the standard for connecting AI agents to tools.",models:["Claude Opus 4.6","Claude Sonnet 4.6","Claude Haiku 4.5"],apps:["Claude.ai","Claude Code","Claude in Chrome / Excel / PowerPoint"],focus:["Safety","Coding","Long context","Agent protocols"],founded:"2021",type:"Private (Amazon-backed)"},
-  {name:"Google DeepMind",flag:"🇺🇸 Mountain View",color:"#4285f4",tagline:"Google's merged AI lab (DeepMind + Google Brain). Builds Gemini and leads on context window size, multimodal research, and integration across Google's 3B+ user products.",models:["Gemini 2.5 Pro","Gemini 2.5 Flash","Gemini Nano","Veo 3.1","Imagen 3"],apps:["Gemini app","AI Overviews","Gemini in Workspace","Mariner","Astra"],focus:["Google ecosystem","Search","Science","Video AI"],founded:"2023 (merged)",type:"Subsidiary of Alphabet"},
-  {name:"Meta AI",flag:"🇺🇸 Menlo Park",color:"#0082fb",tagline:"Playing a different game from everyone else — releasing powerful models as open weights that anyone can download, run, and fine-tune. Embedded in 3B+ social app users via Meta AI.",models:["Llama 4 Scout","Llama 4 Maverick","Llama 4 Behemoth"],apps:["Meta AI (WhatsApp, Instagram, FB, Messenger)","meta.ai"],focus:["Open source","Social AI","On-device","Multilingual"],founded:"2023",type:"Division of Meta"},
-  {name:"xAI",flag:"🇺🇸 Austin",color:"#c8c8c8",tagline:"Elon Musk's AI lab. Grok is the only major AI with real-time access to X/Twitter data. Lowest reported hallucination rate among major models. Growing fast in coding.",models:["Grok 3","Grok 3 Mini"],apps:["Grok app","Grok on X"],focus:["Real-time data","Social","Coding","Low hallucination"],founded:"2023",type:"Private (Elon Musk)"},
-  {name:"Microsoft",flag:"🇺🇸 Redmond",color:"#0078d4",tagline:"Doesn't build its own frontier LLM — partners with OpenAI and deploys AI across Office 365, GitHub, Bing, and Azure. Largest enterprise AI footprint of any company.",models:["Phi-4 (small/edge)","Uses OpenAI models"],apps:["Microsoft Copilot","GitHub Copilot","Bing AI","Azure AI Foundry"],focus:["Enterprise","Office productivity","Developer tools","Edge AI"],founded:"1975",type:"Public (NASDAQ: MSFT)"},
-  {name:"Mistral AI",flag:"🇫🇷 Paris",color:"#f77f00",tagline:"Europe's leading AI lab. Built by ex-DeepMind and Meta researchers. Strong open-weight models, multilingual capabilities, and EU data sovereignty focus.",models:["Mistral Large 3","Mixtral 8x22B","Codestral"],apps:["Le Chat (consumer)","La Plateforme (API)"],focus:["Open source","Multilingual","EU sovereignty","Enterprise"],founded:"2023",type:"Private (€6B valuation)"},
-  {name:"DeepSeek",flag:"🇨🇳 Hangzhou",color:"#4f8ef7",tagline:"Shocked the industry with frontier-quality models at near-zero cost. Open-weight. Best performance-to-price ratio in the market. Note: data sovereignty considerations for enterprise use.",models:["DeepSeek R2","DeepSeek V3","DeepSeek Coder"],apps:["DeepSeek chat","API"],focus:["Cost efficiency","Open weights","Reasoning","Coding"],founded:"2023",type:"Private (Chinese lab)"},
-  {name:"Alibaba (Qwen)",flag:"🇨🇳 Hangzhou",color:"#ff6a00",tagline:"Alibaba's AI division. Qwen3 is one of the most capable open-weight model families — text, image, audio, video in one model. Ultra-low API pricing to compete with DeepSeek.",models:["Qwen3-Omni","Qwen3-Coder","Qwen3-72B"],apps:["Tongyi Qianwen (China)","Alibaba Cloud API"],focus:["Open weights","Omnimodal","Low cost"],founded:"2023",type:"Division of Alibaba"},
-  {name:"Apple",flag:"🇺🇸 Cupertino",color:"#a2a2a7",tagline:"Runs AI on-device for maximum privacy. Apple Intelligence is on every iPhone, iPad, and Mac at no extra cost. Private Cloud Compute handles tasks too complex for the device.",models:["Apple Foundation Models (on-device)","Gemini Nano"],apps:["Apple Intelligence","Siri","Writing Tools"],focus:["Privacy","On-device","Consumer","Zero friction"],founded:"1976",type:"Public (NASDAQ: AAPL)"},
-  {name:"ElevenLabs",flag:"🇺🇸 New York",color:"#27ae60",tagline:"The dominant voice AI company. Hyper-realistic voice cloning and text-to-speech in 32 languages. Used by podcasters, filmmakers, game studios, and enterprises for dubbing at scale.",models:["ElevenLabs v3","Turbo v2.5"],apps:["ElevenLabs Studio","API","Mobile app"],focus:["Voice cloning","TTS","Dubbing","Localisation"],founded:"2022",type:"Private ($3B+ valuation)"},
-  {name:"Midjourney",flag:"🇺🇸 San Francisco",color:"#f5a623",tagline:"The most popular AI image generator. Unmatched aesthetic quality. Operates entirely through Discord with no open API. Highly opinionated style — you work with it, not around it.",models:["Midjourney v7","Niji (anime style)"],apps:["Discord bot","midjourney.com"],focus:["Art generation","Aesthetics","Creative tools"],founded:"2022",type:"Private (independent, profitable)"},
-  {name:"Runway",flag:"🇺🇸 New York",color:"#e84393",tagline:"The leading independent AI video lab. Gen-4 produces the most controllable AI video in the industry. Heavily used in professional film production and by content creators.",models:["Gen-4","Gen-4 Turbo"],apps:["Runway Studio","API"],focus:["Video generation","Film","Controllability"],founded:"2018",type:"Private ($4B+ valuation)"},
+// ════════════════════════════════════════════
+// LABS DATA
+// ════════════════════════════════════════════
+const labs=[
+  {region:"US",cat:"AI Lab",name:"OpenAI",loc:"🇺🇸 San Francisco",c:"#10a37f",url:"https://openai.com",year:"2015",rel:null,
+   people:[{n:"Sam Altman",r:"CEO"},{n:"Greg Brockman",r:"President"}],
+   about:"Started the modern AI era with ChatGPT in November 2022. Originally a nonprofit; restructured to for-profit to attract investment. Now the most-used AI provider worldwide, with Microsoft as the key distribution and funding partner ($13B+).",
+   models:["GPT-5.3 Instant","GPT-5.4 Thinking","GPT-5.3-Codex","Whisper","GPT Image","Sora 2"],
+   apps:["ChatGPT","Codex agent","Operator"],focus:["General AI","Reasoning","Agentic OS","Multimodal","Video"],
+   note:"Altman was briefly fired by the board in Nov 2023 over 'candour' concerns, reinstated after a near-total staff revolt. Restructured fully to for-profit in 2025. Ongoing tension between commercial growth and the original safety mission."},
+  {region:"US",cat:"AI Lab",name:"Anthropic",loc:"🇺🇸 San Francisco",c:"#c96442",url:"https://anthropic.com",year:"2021",rel:null,
+   people:[{n:"Dario Amodei",r:"CEO"},{n:"Daniela Amodei",r:"President"}],
+   about:"Founded by Dario Amodei and colleagues who left OpenAI over safety disagreements. Explicitly safety-first. Developed Constitutional AI methodology and the MCP protocol — now the emerging industry standard for connecting agents to external tools. Amazon invested $4B+.",
+   models:["Claude Opus 4.6","Claude Sonnet 4.6","Claude Haiku 4.5"],
+   apps:["Claude.ai","Claude Code","Claude in Chrome / Excel / PowerPoint"],focus:["AI Safety","Coding","Long context","Agent protocols"],
+   note:"In Feb 2026, Dario Amodei refused Pentagon requests to lift Claude's restrictions on mass surveillance and fully autonomous weapons — a rare public stand against a major government client. Valued at $380B as of early 2026."},
+  {region:"US",cat:"AI Lab",name:"xAI",loc:"🇺🇸 Austin",c:"#c8c8c8",url:"https://x.ai",year:"2023",rel:null,
+   people:[{n:"Elon Musk",r:"Founder & CEO"}],
+   about:"Founded by Musk after selling his OpenAI shares and suing OpenAI for departing from its nonprofit mission. Grok is the only major model with real-time access to X (Twitter) data.",
+   models:["Grok 3","Grok 3 Mini"],apps:["Grok app","Grok on X"],focus:["Real-time data","Low hallucination","Coding","Social media"],
+   note:"Musk simultaneously runs OpenAI's main competitor while serving as a senior US government official (DOGE). He sued OpenAI in 2024 for abandoning its nonprofit mission — a mission critics say xAI itself does not follow."},
+  {region:"US",cat:"AI Lab",name:"Google DeepMind",loc:"🇬🇧🇺🇸 London / Mountain View",c:"#4285f4",url:"https://deepmind.google",year:"2023 (merged)",rel:"Subsidiary of Alphabet Inc.",
+   people:[{n:"Demis Hassabis",r:"CEO, Google DeepMind"},{n:"Sundar Pichai",r:"CEO, Alphabet"}],
+   about:"Formed by merging Google Brain and DeepMind in 2023 under Demis Hassabis — 2024 Nobel Prize laureate for AlphaFold. The most resource-rich AI lab in the world. Industry leader in context window size and multimodal research. Gemini reaches 3B+ users across Google products.",
+   models:["Gemini 2.5 Pro","Gemini 2.5 Flash","Gemini Nano","Veo 3.1","Imagen 3"],
+   apps:["Gemini app","AI Overviews","Gemini in Workspace","Mariner","Project Astra"],focus:["Google ecosystem","Scientific AI","Video","Long context"],
+   note:"Gemini's image generator (Feb 2024) generated historically inaccurate images and refused to depict certain groups, causing a public backlash. Feature was paused and reset. Gemini 2.5 Pro represents a significant quality recovery."},
+  {region:"US",cat:"AI Lab",name:"Meta AI Research (FAIR)",loc:"🇺🇸 Menlo Park",c:"#0082fb",url:"https://ai.meta.com",year:"2013",rel:"Division of Meta Platforms Inc.",
+   people:[{n:"Mark Zuckerberg",r:"CEO, Meta"},{n:"Yann LeCun",r:"Chief AI Scientist (departing)"}],
+   about:"The only major lab with a strategic commitment to open-weight models — releasing Llama weights for anyone to download, run, and fine-tune. Llama 4 is embedded into 3B+ social app users. Yann LeCun — Turing Award winner — announced departure Nov 2025 to found AMI Labs, publicly criticising Meta's LLM-only focus as a dead end.",
+   models:["Llama 4 Scout","Llama 4 Maverick","Llama 4 Behemoth"],
+   apps:["Meta AI (WhatsApp, Instagram, FB, Messenger)","meta.ai"],focus:["Open-weight","Social AI","On-device","Multilingual"],
+   note:"LeCun's departure was pointed: he argued multi-billion LLM investment is fundamentally misguided and LLMs will never achieve human-level intelligence. He left to pursue a different architectural approach."},
+  {region:"US",cat:"AI Lab",name:"Apple Machine Learning",loc:"🇺🇸 Cupertino",c:"#a2a2a7",url:"https://machinelearning.apple.com",year:"2016",rel:"Division of Apple Inc.",
+   people:[{n:"John Giannandrea",r:"SVP Machine Learning"},{n:"Tim Cook",r:"CEO, Apple"}],
+   about:"Apple's AI research division, focused on on-device inference rather than cloud-scale training. Developed Apple Foundation Models powering Apple Intelligence — running locally on iPhone, iPad, and Mac. Private Cloud Compute handles overflow with cryptographic privacy guarantees Apple itself cannot break.",
+   models:["Apple Foundation Models (on-device)","Apple Foundation Models (server)"],
+   apps:["Siri","Apple Intelligence","Writing Tools","Image Playground"],focus:["On-device inference","Privacy","Edge AI","Consumer UX"],
+   note:"Siri still significantly lags ChatGPT and Claude in raw intelligence. Apple Intelligence launched late (late 2024) and several features shipped months after announcement."},
+  {region:"Europe",cat:"AI Lab",name:"Mistral AI",loc:"🇫🇷 Paris",c:"#f77f00",url:"https://mistral.ai",year:"2023",rel:null,
+   people:[{n:"Arthur Mensch",r:"CEO"},{n:"Guillaume Lample",r:"Co-founder"},{n:"Timothée Lacroix",r:"Co-founder"}],
+   about:"Europe's leading AI lab and strategic AI champion. Founded by three researchers from DeepMind and Meta. Committed to open-weight models and EU data sovereignty. Valued at €6B. Has European government partnerships and is the only European lab competing at frontier level.",
+   models:["Mistral Large 3","Mixtral 8x22B","Codestral","Mistral Embed"],
+   apps:["Le Chat","La Plateforme (API)"],focus:["Open-weight","Multilingual","EU sovereignty","Enterprise"],note:null},
+  {region:"Europe",cat:"AI Lab",name:"Aleph Alpha",loc:"🇩🇪 Heidelberg",c:"#6c63ff",url:"https://aleph-alpha.com",year:"2019",rel:null,
+   people:[{n:"Jonas Andrulis",r:"CEO & Co-founder"}],
+   about:"Germany's leading AI lab. Developed the Luminous model family — one of the first European LLMs. Pivoted in 2024 from consumer products to enterprise and government AI infrastructure, positioning as the trusted AI provider for European institutions requiring full GDPR compliance and data residency.",
+   models:["Luminous Supreme","Pharia-1"],
+   apps:["PhariaAI (enterprise)","Aleph Alpha API"],focus:["EU sovereignty","Government AI","GDPR","Explainable AI"],
+   note:"Pivoting away from consumer AI in 2024 raised questions about frontier competitiveness. Critics argue the pivot was partly forced by an inability to keep pace with US labs on raw capability."},
+  {region:"Europe",cat:"AI Lab (Nonprofit)",name:"Kyutai",loc:"🇫🇷 Paris",c:"#e76f51",url:"https://kyutai.org",year:"2023",rel:null,
+   people:[{n:"Xavier Niel",r:"Founder (backer)"}],
+   about:"French nonprofit AI research lab funded by billionaire Xavier Niel. Released Moshi — the first real-time, full-duplex voice AI capable of simultaneously listening and speaking. A notable technical breakthrough in conversational AI.",
+   models:["Moshi (real-time voice)","Helium-1"],apps:["moshi.chat (research demo)"],focus:["Open research","Real-time voice","Scientific publication"],note:null},
+  {region:"Europe",cat:"AI Lab",name:"Silo AI",loc:"🇫🇮 Helsinki",c:"#00b4d8",url:"https://silo.ai",year:"2017",rel:"Acquired by AMD Inc. — $665M (August 2024)",
+   people:[{n:"Peter Sarlin",r:"CEO & Co-founder"}],
+   about:"Nordic Europe's largest private AI lab. Built the Viking series of Nordic multilingual models covering Finnish, Swedish, Norwegian, Danish, and Icelandic. Acquired by AMD in 2024 in a strategic move to challenge NVIDIA's AI dominance from the hardware side.",
+   models:["SiloLM","Viking (Nordic multilingual)"],apps:["Enterprise AI solutions"],focus:["Nordic languages","Enterprise AI","Open-weight","Edge"],note:null},
+  {region:"Europe",cat:"AI Lab",name:"Stability AI",loc:"🇬🇧 London",c:"#7f8c8d",url:"https://stability.ai",year:"2020",rel:null,
+   people:[{n:"Prem Akkaraju",r:"CEO"},{n:"Emad Mostaque",r:"Founder (resigned 2024)"}],
+   about:"Creator of Stable Diffusion — the open-source image model that democratised AI image generation and spawned thousands of community fine-tunes. Despite a turbulent 2024, Stable Diffusion remains the most widely used open-weight image model.",
+   models:["Stable Diffusion 3.5","SDXL","Stable Audio"],apps:["DreamStudio","API","Hugging Face community"],focus:["Open-source image","Audio generation","Community-driven"],
+   note:"Founder Emad Mostaque resigned in March 2024 amid reports of financial mismanagement and overstated company metrics. Financial stability remains uncertain despite restructuring."},
+  {region:"China",cat:"AI Lab",name:"DeepSeek",loc:"🇨🇳 Hangzhou",c:"#4f8ef7",url:"https://deepseek.com",year:"2023",rel:null,
+   people:[{n:"Liang Wenfeng",r:"Founder & CEO"}],
+   about:"Shocked the global AI industry in January 2025 by releasing DeepSeek R1 — a frontier reasoning model reportedly trained for under $6M. Triggered a global market selloff (Nvidia lost ~$600B in market cap in one day). Open-weight. Best performance-to-price ratio available.",
+   models:["DeepSeek R2","DeepSeek V3","DeepSeek Coder V3"],apps:["DeepSeek chat","API"],focus:["Cost efficiency","Open weights","Reasoning","Coding"],
+   note:"Subject to Chinese national security laws — data sent to DeepSeek's API could be accessible to Chinese authorities. Multiple governments (US, Italy, Australia, Taiwan) have restricted use on government devices."},
+  {region:"China",cat:"AI Lab",name:"Alibaba — Qwen Team",loc:"🇨🇳 Hangzhou",c:"#ff6a00",url:"https://qwenlm.github.io",year:"2023",rel:"Division of Alibaba Group",
+   people:[{n:"Jingren Zhou",r:"CTO, Alibaba Cloud"}],
+   about:"Alibaba's AI research arm. Qwen3-Omni handles text, image, audio, and video in one model. Aggressively competitive on pricing, repeatedly cutting API costs to challenge DeepSeek for developer adoption.",
+   models:["Qwen3-Omni","Qwen3-Coder","Qwen3-72B"],apps:["Tongyi Qianwen (China)","Alibaba Cloud API"],focus:["Open weights","Omnimodal","Low cost"],
+   note:"Same data jurisdiction concerns as DeepSeek — Alibaba is subject to Chinese national security laws. Not recommended for sensitive enterprise data outside China."},
+  {region:"China",cat:"AI Lab",name:"Baidu Research",loc:"🇨🇳 Beijing",c:"#eb3434",url:"https://research.baidu.com",year:"2014",rel:"Division of Baidu Inc.",
+   people:[{n:"Robin Li",r:"CEO, Baidu"},{n:"Haifeng Wang",r:"CTO & Chief AI Officer"}],
+   about:"China's original AI heavyweight. Developed ERNIE Bot (文心一言) — China's most deployed consumer AI. Baidu also runs Apollo, China's leading autonomous driving platform. ERNIE 4.0 is competitive for Chinese language tasks.",
+   models:["ERNIE 4.0","ERNIE Speed"],apps:["ERNIE Bot","Baidu Search AI","Apollo"],focus:["Chinese language AI","Search","Autonomous driving"],
+   note:"ERNIE Bot's March 2023 launch was rushed — demo avoided live questions and Baidu's stock dropped 10% on the day. Heavy regulatory pressure from Chinese government on content moderation."},
+  {region:"Specialist",cat:"Specialist Lab — Image",name:"Midjourney",loc:"🇺🇸 San Francisco",c:"#f5a623",url:"https://midjourney.com",year:"2022",rel:null,
+   people:[{n:"David Holz",r:"Founder & CEO"}],
+   about:"The most popular AI image generator. Unmatched aesthetic quality. Operates entirely through Discord — no open API, a deliberate community-first choice. Profitable and independent. v7 introduced major realism improvements.",
+   models:["Midjourney v7","Niji 6 (anime)"],apps:["Discord bot","midjourney.com (web beta)"],focus:["Image generation","Artistic quality","Creative community"],
+   note:"Class-action lawsuit from artists alleging training on their work without consent. Midjourney has not disclosed training data sources. Cases ongoing."},
+  {region:"Specialist",cat:"Specialist Lab — Video",name:"Runway",loc:"🇺🇸 New York",c:"#e84393",url:"https://runwayml.com",year:"2018",rel:null,
+   people:[{n:"Cristóbal Valenzuela",r:"CEO & Co-founder"}],
+   about:"The leading independent AI video lab. Gen-4 is the most controllable AI video tool available. Standard in professional film production, used on major Hollywood releases. Valued at $4B+.",
+   models:["Gen-4","Gen-4 Turbo"],apps:["Runway Studio","API"],focus:["Video generation","Professional film","Controllability"],note:null},
+  {region:"Specialist",cat:"Specialist Lab — Voice",name:"ElevenLabs",loc:"🇺🇸 New York",c:"#27ae60",url:"https://elevenlabs.io",year:"2022",rel:null,
+   people:[{n:"Mati Staniszewski",r:"CEO"},{n:"Piotr Dąbkowski",r:"CTO"}],
+   about:"The dominant voice AI platform. Hyper-realistic voice cloning and text-to-speech in 32 languages. Clone any voice from a 30-second sample. Used by podcasters, film studios, game developers, and enterprises for dubbing at scale. Valued at $3B+.",
+   models:["ElevenLabs v3","Turbo v2.5"],apps:["ElevenLabs Studio","API"],focus:["Voice cloning","TTS","Dubbing","Localisation"],
+   note:"Voice cloning has been used in political disinformation — fake audio of public figures. Misuse cases documented including in elections."},
+  {region:"Specialist",cat:"Specialist Lab — Music",name:"Suno AI",loc:"🇺🇸 Cambridge MA",c:"#9b59b6",url:"https://suno.com",year:"2022",rel:null,
+   people:[{n:"Mikey Shulman",r:"CEO"}],
+   about:"Leading text-to-music AI. Describe a song in plain language and get a full production with vocals, harmonies, and mastering in seconds. Most accessible music creation tool available to non-musicians.",
+   models:["Suno v4"],apps:["suno.com","Mobile app"],focus:["Text-to-music","Full song generation","Accessibility"],
+   note:"Sony, Universal, Warner filed copyright suits in 2024 alleging training on copyrighted recordings. Cases ongoing."},
 ];
 
-const models = [
-  {by:"OpenAI",name:"GPT-5.2",color:"#10a37f",type:"Flagship",desc:"OpenAI's main general-purpose model. Best all-rounder for everyday tasks, writing, coding, and reasoning. Multimodal — text, image, voice.",specs:["Multimodal","Web search","Code","Vision","Voice"],hl:"Best all-rounder"},
-  {by:"OpenAI",name:"GPT-5.3-Codex",color:"#10a37f",type:"Coding Agent",desc:"Autonomous coding model. Runs in cloud sandboxes, writes features, fixes bugs, opens pull requests independently. 25% faster than predecessor.",specs:["Agentic","Multi-file","Autonomous","Sandboxed","Fast"],hl:"Best coding agent"},
-  {by:"OpenAI",name:"o3 / o4",color:"#10a37f",type:"Reasoning",desc:"Slow-thinking chain-of-thought models. Best for math, science, complex logic. Takes longer but far more accurate than standard models.",specs:["Extended thinking","Math","Science","Logic","Self-correcting"],hl:null},
-  {by:"OpenAI",name:"GPT-4o mini",color:"#10a37f",type:"Lightweight",desc:"Fast and cheap. Best for simple tasks, high-volume API use, and real-time applications where cost matters.",specs:["Fast","Low cost","API-friendly"],hl:null},
-  {by:"Anthropic",name:"Claude Sonnet 4.6",color:"#c96442",type:"Balanced",desc:"Top coding benchmarks (SWE-bench 72.7%). The model GitHub chose for Copilot's coding agent. Best balance of speed and intelligence.",specs:["SWE-bench #1","Coding","200K context","Fast"],hl:"Best for coding"},
-  {by:"Anthropic",name:"Claude Opus 4.6",color:"#c96442",type:"Flagship",desc:"Anthropic's most powerful model. Best for complex analysis, long documents, nuanced multi-step reasoning.",specs:["200K context","Deep reasoning","Analysis","Long docs"],hl:null},
-  {by:"Anthropic",name:"Claude Haiku 4.5",color:"#c96442",type:"Lightweight",desc:"Ultra-fast and cost-effective. Designed for high-volume, lightweight tasks and API integration.",specs:["Ultra fast","Low cost","API"],hl:null},
-  {by:"Google",name:"Gemini 2.5 Pro",color:"#4285f4",type:"Flagship",desc:"Industry-leading 1M token context window — can process an entire book in one prompt. Strong multimodal and Workspace integration.",specs:["1M context","Multimodal","Workspace","Search"],hl:"Largest context"},
-  {by:"Google",name:"Gemini 2.5 Flash",color:"#4285f4",type:"Balanced",desc:"Faster, cheaper Gemini for everyday use. Still multimodal with a very large context window.",specs:["Fast","Multimodal","Low cost"],hl:null},
-  {by:"Meta",name:"Llama 4 Maverick",color:"#0082fb",type:"Open-weight",desc:"Meta's main workhorse. 400B parameters. Multimodal. Open-weight — download, run, and fine-tune it yourself. Free.",specs:["Open-weight","Multimodal","400B params","Free to use"],hl:"Open source"},
-  {by:"Meta",name:"Llama 4 Scout",color:"#0082fb",type:"Open-weight",desc:"Lightweight Llama with a 10 million token context window — the largest of any model available.",specs:["10M context","Lightweight","Open-weight"],hl:"10M tokens"},
-  {by:"xAI",name:"Grok 3",color:"#c8c8c8",type:"Flagship",desc:"Real-time access to X/Twitter data. Lowest hallucination rate (~4%) among major models. Strong on coding and current events.",specs:["Real-time data","~4% hallucination","Coding","X integration"],hl:"Lowest hallucination"},
-  {by:"Mistral",name:"Mistral Large 3",color:"#f77f00",type:"Flagship",desc:"Open-weight, multilingual, multimodal. EU-hosted. Competes with GPT-4o and Gemini 2 on most benchmarks.",specs:["Open-weight","Multilingual","EU-hosted","Multimodal"],hl:null},
-  {by:"DeepSeek",name:"DeepSeek R2",color:"#4f8ef7",type:"Reasoning",desc:"Frontier reasoning at near-zero cost. Comparable to o3 on many benchmarks. Open-weight with a very low API price.",specs:["Open-weight","~$0.50/M tokens","Reasoning","Coding"],hl:"Best value"},
-  {by:"Alibaba",name:"Qwen3-Omni",color:"#ff6a00",type:"Flagship",desc:"Text, image, audio, video — all in one model. Competitive with GPT-4o. Ultra-low API pricing.",specs:["Omnimodal","Low cost","Open-weight"],hl:null},
+// ════════════════════════════════════════════
+// MODELS DATA
+// ════════════════════════════════════════════
+const models=[
+  {by:"OpenAI",name:"GPT-5.3 Instant",c:"#10a37f",type:"Default",
+   desc:"Current default model in ChatGPT for all users as of March 2026. Fast, multimodal — handles text, images, voice, and file analysis. Replaced GPT-4o and GPT-5.1 entirely in February 2026.",
+   tags:["Current default","Multimodal","All plans","Web search","400K context"],star:"Current ChatGPT default",
+   notable:"GPT-5.3 became ChatGPT's default in February 2026 when GPT-4o, GPT-4.1, and GPT-5.1 were retired — publicly confirmed by OpenAI. Auto-routes to GPT-5.4 Thinking for complex queries on paid plans.",
+   training:"Trained on a mix of web text, books, code, and licensed content through early 2026. OpenAI has not publicly disclosed full training data details."},
+  {by:"OpenAI",name:"GPT-5.4 Thinking",c:"#10a37f",type:"Reasoning",
+   desc:"OpenAI's frontier reasoning model — thinks step by step before answering. Best for tasks where correctness matters more than speed: complex analysis, code architecture, research synthesis. Available on Plus, Pro, Business plans.",
+   tags:["Extended reasoning","Paid plans","Adjustable thinking","1M context"],star:"Best for hard problems",
+   notable:"Incorporates GPT-5.3-Codex's coding capabilities. Thinking time is adjustable — more thinking = better results but slower response. GPT-5.4 Pro (Pro plan only) adds the deepest reasoning available.",
+   training:"Same base training as GPT-5.3 Instant with additional reinforcement learning for reasoning. OpenAI has not published full details."},
+  {by:"OpenAI",name:"GPT-5.3-Codex",c:"#10a37f",type:"Coding Agent",
+   desc:"Autonomous software engineering model. Runs in cloud sandboxes, reads codebases, writes features, fixes bugs, opens pull requests. Operates for hours without human intervention.",
+   tags:["Agentic","Sandboxed","Multi-file","Autonomous"],star:"Best autonomous coding",
+   notable:"Used internally by OpenAI to help debug its own training pipeline during development — publicly stated. Powers the standalone Codex agent product. Distinct from GPT-5.3 Instant.",
+   training:"Fine-tuned on large-scale code repositories. OpenAI has not disclosed specific datasets."},
+  {by:"Anthropic",name:"Claude Sonnet 4.6",c:"#c96442",type:"Balanced",
+   desc:"Anthropic's workhorse model. Top performer on SWE-bench (real-world software engineering). The model GitHub selected to power Copilot's coding agent.",
+   tags:["SWE-bench #1 (72.7%)","200K context","Fast","Coding","Analysis"],star:"Top SWE-bench score",
+   notable:"SWE-bench score of 72.7% is publicly verified — it uses real GitHub issues, not synthetic tests. GitHub's selection for Copilot agent is publicly documented. Preferred by professional developers for reliability over long complex sessions.",
+   training:"Trained using Constitutional AI methodology — a documented Anthropic technique where the model is trained against a set of principles. Training data details are not publicly disclosed."},
+  {by:"Anthropic",name:"Claude Opus 4.6",c:"#c96442",type:"Flagship",
+   desc:"Anthropic's most powerful model. Designed for deep multi-step reasoning, synthesis of very long documents, and tasks requiring sustained careful judgment.",
+   tags:["200K context","Deep reasoning","Long docs","Complex analysis"],star:null,
+   notable:"Preferred for legal, research, and analytical work requiring depth over speed. More expensive and slower than Sonnet — use Sonnet for most coding tasks, Opus when complexity demands it.",
+   training:"Same Constitutional AI training approach as Sonnet. Context window of 200K tokens allows processing approximately 500 pages of text in a single session."},
+  {by:"Anthropic",name:"Claude Haiku 4.5",c:"#c96442",type:"Lightweight",
+   desc:"Ultra-fast, low-cost model for high-volume API use. Sub-second responses. Best for customer support bots, autocomplete, and classification at scale.",
+   tags:["Sub-second","Low cost","API-first","High volume"],star:null,
+   notable:"Go-to model for developers making thousands of AI calls per day at minimal cost. The speed-cost trade-off is intentional by design.",
+   training:null},
+  {by:"Google DeepMind",name:"Gemini 2.5 Pro",c:"#4285f4",type:"Flagship",
+   desc:"Google's best model. Industry-leading 1 million token context window — can process an entire book, full codebase, or hours of video in a single prompt.",
+   tags:["1M token context","Multimodal","Workspace","Video understanding"],star:"Largest context window",
+   notable:"The 1M context window is a verifiable industry-leading specification. Powers AI Overviews in Google Search globally. Demis Hassabis won the 2024 Nobel Prize in Chemistry for AlphaFold — confirming Google DeepMind's scientific AI leadership.",
+   training:"Trained on web text, code, images, video, and audio. Google has not disclosed the full scope. Gemini Nano (on-device variant) is specifically designed for mobile inference without sending data to servers."},
+  {by:"Google DeepMind",name:"Gemini 2.5 Flash",c:"#4285f4",type:"Balanced",
+   desc:"Faster, lower-cost Gemini for everyday tasks. Still multimodal with a large context window. Powers most Gemini features in Gmail and Docs for standard plan users.",
+   tags:["Fast","Multimodal","Low cost","Workspace"],star:null,
+   notable:"Practical model for day-to-day Workspace tasks. Handles email drafting, doc summarization, and spreadsheet Q&A reliably at lower cost than Pro.",
+   training:null},
+  {by:"Meta AI Research",name:"Llama 4 Maverick",c:"#0082fb",type:"Open-weight",
+   desc:"Meta's main open-weight model. 400B parameters. Multimodal. Download it, run it on your own servers, fine-tune for your use case — no API dependency, no usage fees.",
+   tags:["Open-weight","Multimodal","400B params","Self-hostable","Free"],star:"Leading open-source model",
+   notable:"Meta's open-weight commitment is publicly documented strategic policy. The existence of Llama 4 at this quality level has changed enterprise AI — companies can now self-host frontier-capable models. Extensively used in academic research globally.",
+   training:"Trained on publicly available text, code, and images. Meta publishes model cards with training details on Hugging Face. Not trained on WhatsApp or Messenger private messages — Meta has publicly stated this."},
+  {by:"Meta AI Research",name:"Llama 4 Scout",c:"#0082fb",type:"Open-weight",
+   desc:"Lightweight Llama 4 variant with a 10 million token context window — the largest of any model by a factor of 10.",
+   tags:["10M tokens","Lightweight","Open-weight"],star:"Largest context ever built",
+   notable:"10M tokens is a verified specification. Practically useful for organisations with massive document archives: legal firms, biotech companies, financial institutions with decades of records.",
+   training:"Open-weight — model weights and training details published by Meta on Hugging Face."},
+  {by:"xAI",name:"Grok 3",c:"#c8c8c8",type:"Flagship",
+   desc:"xAI's main model. Unique real-time access to X/Twitter's full data stream. The only frontier model that can tell you what's happening right now on social media.",
+   tags:["Real-time X data","Coding","Current events"],star:"Only real-time social data",
+   notable:"The X/Twitter data integration is architecturally unique — not replicated by any other major model. ~4% hallucination rate is xAI's self-reported figure; treat with appropriate scepticism until independently verified.",
+   training:"Trained on web text, code, and X/Twitter data. xAI has not disclosed full training data details. The X/Twitter data access gives it unique recency for social media and news content."},
+  {by:"Mistral AI",name:"Mistral Large 3",c:"#f77f00",type:"Flagship",
+   desc:"Mistral's frontier open-weight model. Multilingual, multimodal. Can be deployed entirely within EU infrastructure. Competes with GPT-4o class models.",
+   tags:["Open-weight","Multilingual","EU-hosted","Multimodal","GDPR-compliant"],star:"Best EU-sovereign option",
+   notable:"Selected by European government institutions specifically for GDPR compliance and data residency requirements. Strong on European languages — benchmark scores competitive with GPT-4o class for French, German, Spanish, Italian.",
+   training:"Trained predominantly on multilingual web text with a strong European language representation. Open-weight — model weights published on Hugging Face. EU-hosted deployment option means training inference stays within European infrastructure."},
+  {by:"DeepSeek",name:"DeepSeek R2",c:"#4f8ef7",type:"Reasoning",
+   desc:"DeepSeek's frontier reasoning model. Open-weight. API cost roughly 1/50th of comparable US models. Proved frontier AI doesn't require $100M+ training budgets.",
+   tags:["Open-weight","~$0.50/M tokens","Reasoning","Coding"],star:"Best price-to-performance",
+   notable:"The market shock from DeepSeek R1 (predecessor) in Jan 2025 is a documented fact — Nvidia lost ~$600B market cap in one day. R2 continues this trajectory. Not recommended for sensitive data — Chinese data jurisdiction applies to API usage.",
+   training:"DeepSeek has published research papers detailing their training efficiency innovations — notably using a Mixture of Experts architecture that reduces compute requirements significantly. Open-weight with published technical reports."},
+  {by:"Alibaba — Qwen",name:"Qwen3-Omni",c:"#ff6a00",type:"Flagship",
+   desc:"Alibaba's top model. Handles text, image, audio, and video natively in a single model. Competitive benchmarks. Ultra-low API pricing.",
+   tags:["Omnimodal","Low cost","Open-weight","Text+Image+Audio+Video"],star:null,
+   notable:"One of very few models handling all four modalities in a single system. Strong for multilingual Asian language tasks. Same data sovereignty concerns as DeepSeek apply to API usage.",
+   training:"Open-weight — model weights published on Hugging Face. Trained on multilingual text, code, and multimodal data with a strong representation of Chinese and East Asian languages."},
+  {by:"Aleph Alpha",name:"Luminous / Pharia-1",c:"#6c63ff",type:"EU Sovereign",
+   desc:"Aleph Alpha's model family, developed and hosted entirely within EU infrastructure. Competing on trustworthiness, explainability, and regulatory compliance for European government.",
+   tags:["EU-hosted","GDPR","Explainable AI","Government-certified","Sovereign"],star:"Most sovereign EU model",
+   notable:"Verified deployments in German federal agencies and EU institutions. Pharia-1 designed for enterprise workflows requiring auditability. Value proposition is verifiable data governance, not raw capability.",
+   training:"Trained entirely on EU-hosted infrastructure using curated, licensed datasets. Aleph Alpha publishes data governance documentation for enterprise and government clients — a key differentiator from US and Chinese models."},
+  {by:"Baidu Research",name:"ERNIE 4.0",c:"#eb3434",type:"Flagship (China)",
+   desc:"Baidu's flagship LLM. China's most deployed consumer AI model. Powers Baidu Search AI and ERNIE Bot.",
+   tags:["Chinese language","Search-integrated","Baidu ecosystem","Multimodal"],star:null,
+   notable:"Dominant for Chinese language and culturally specific tasks. Subject to Chinese government content moderation requirements — outputs are filtered accordingly. Less relevant for non-Chinese markets.",
+   training:"Trained on Chinese-language web text, Baidu Search data, and Chinese academic and professional content. Subject to Chinese regulatory requirements regarding permissible training data."},
 ];
 
-const apps = [
-  {icon:"💬",name:"ChatGPT",by:"OpenAI",powered:"GPT-5.2 / o4",category:"General Chat",desc:"The world's most-used AI app. Writing, image generation, voice, web search, coding, plugins. Works for almost everything.",price:"Free / $20 / $200/mo",ease:5,bestFor:"General use, broadest feature set"},
-  {icon:"🟣",name:"Claude.ai",by:"Anthropic",powered:"Claude Sonnet / Opus",category:"General Chat",desc:"Thoughtful, high-quality responses. Best for writing, analysis, long documents, and coding tasks.",price:"Free / $20 / $100–200/mo",ease:5,bestFor:"Writing, coding, analysis, long docs"},
-  {icon:"✨",name:"Gemini",by:"Google",powered:"Gemini 2.5 Pro",category:"General Chat",desc:"Google's AI assistant. Deeply integrated with Gmail, Drive, and Docs. Best for users already in Google's ecosystem.",price:"Free / $19.99/mo",ease:5,bestFor:"Google Workspace users"},
-  {icon:"⚡",name:"Grok",by:"xAI",powered:"Grok 3",category:"General Chat",desc:"Built into X. Real-time information access. Growing fast in coding and general reasoning.",price:"Free / $30/mo (SuperGrok)",ease:4,bestFor:"Real-time info, X/Twitter users"},
-  {icon:"🔥",name:"Le Chat",by:"Mistral AI",powered:"Mistral Large 3",category:"General Chat",desc:"Mistral's consumer app. Multilingual, privacy-friendly, EU-hosted. Good choice for European users.",price:"Free / €14.99/mo",ease:4,bestFor:"EU users, multilingual tasks"},
-  {icon:"🐟",name:"DeepSeek",by:"DeepSeek",powered:"DeepSeek R2/V3",category:"General Chat",desc:"Powerful reasoning and coding at near-zero cost. Open-source. Very popular with developers.",price:"Free. Ultra-cheap API.",ease:5,bestFor:"Budget users, developers, coding"},
-  {icon:"🔍",name:"Perplexity",by:"Independent",powered:"GPT / Claude / Gemini",category:"Research",desc:"AI-powered search engine. Every answer cites sources. Best for research where accuracy and attribution matter.",price:"Free / $20/mo",ease:5,bestFor:"Research, fact-checking, sourced answers"},
-  {icon:"🪟",name:"Microsoft Copilot",by:"Microsoft",powered:"GPT-5.2",category:"Productivity",desc:"AI inside Word, Excel, PowerPoint, Outlook, and Teams. Summarizes, drafts emails, analyzes spreadsheets.",price:"~$30/user/mo (M365 add-on)",ease:5,bestFor:"Microsoft 365 users"},
-  {icon:"🔵",name:"Gemini in Workspace",by:"Google",powered:"Gemini 2.5 Pro",category:"Productivity",desc:"AI inside Gmail, Docs, Sheets, and Slides. Drafts emails, summarizes threads, analyzes data inline.",price:"Included in Google AI Pro ($19.99/mo)",ease:5,bestFor:"Google Workspace power users"},
-  {icon:"🍎",name:"Apple Intelligence",by:"Apple",powered:"Apple Foundation + ChatGPT",category:"On-device",desc:"Runs on your iPhone, iPad, Mac. Writing tools, smart notifications, photo editing. No subscription — free with device.",price:"Free with Apple device",ease:5,bestFor:"iPhone/Mac users, privacy-first"},
-  {icon:"🦙",name:"Meta AI",by:"Meta",powered:"Llama 4",category:"Social",desc:"Built into WhatsApp, Instagram, Facebook, Messenger. Quick answers, image gen — inside apps you already use.",price:"Free",ease:5,bestFor:"Casual use, social apps"},
-  {icon:"🖥️",name:"Cursor",by:"Anysphere",powered:"Claude / GPT / Gemini",category:"Coding",desc:"AI-native code editor (fork of VS Code). Deep codebase understanding, multi-file edits, autonomous agents.",price:"Free / $20 / $60 / $200/mo",ease:3,bestFor:"Developers, complex codebases"},
-  {icon:"🐙",name:"GitHub Copilot",by:"GitHub / Microsoft",powered:"Claude Sonnet + GPT",category:"Coding",desc:"AI coding plugin inside VS Code, JetBrains, Xcode. Completions, chat, PR descriptions, agent mode.",price:"Free / $10 / $39/mo",ease:4,bestFor:"Developers in existing editors"},
-  {icon:"🌬️",name:"Windsurf",by:"Cognition",powered:"Multiple models",category:"Coding",desc:"Session-aware coding agent. Tracks clipboard, terminal, and edits to understand your intent in real time.",price:"~$15/mo",ease:3,bestFor:"Session-aware AI coding"},
-  {icon:"⚙️",name:"Claude Code",by:"Anthropic",powered:"Claude Sonnet 4.6",category:"Coding",desc:"Terminal-based coding agent. Reads your codebase, edits files, runs tests, commits — from the command line.",price:"Pay-per-use (API)",ease:2,bestFor:"Power developers, terminal users"},
+// ════════════════════════════════════════════
+// APPS DATA
+// ════════════════════════════════════════════
+const appCats=['All','General Chat','Research','Personal Assistant','Productivity','Coding','Autonomous Agent','Creative'];
+const typeClass={first:'ab-first',third:'ab-third',embed:'ab-embed',agg:'ab-agg',device:'ab-device'};
+
+const apps=[
+  // ── GENERAL CHAT ──
+  {icon:"💬",name:"ChatGPT",by:"OpenAI",cats:["General Chat"],type:"first",typeLabel:"First-party",agentOS:false,
+   models:"GPT-5.3 Instant · GPT-5.4 Thinking (paid) · GPT-5.4 Pro (Pro only)",
+   price:"Free · Plus $20/mo · Pro $200/mo",
+   priceWarn:"Free: 10 messages per 5 hours with GPT-5.3, then drops to mini. Plus: 160 messages/3hrs. Pro: unlimited.",
+   desc:"The app that mainstreamed consumer AI. Covers writing, image generation, voice conversation, web search, file analysis, code execution, and data visualisation. Over 300M weekly active users. OpenAI builds both the model and the app.",
+   usecases:[
+     {t:"Everyday questions",d:"Ask anything — cooking, travel, health, how things work. Synthesises an answer rather than giving you links to click."},
+     {t:"Writing help",d:"Draft emails, cover letters, social posts, essays. Specify tone and audience and it adapts accordingly."},
+     {t:"Image generation",d:"Type what you want to see and ChatGPT generates it. Best for product mockups, illustrations, and creative concepts."},
+     {t:"Data analysis & finance",d:"Upload a bank statement or spreadsheet. Code Interpreter runs real Python calculations — 'what did I spend most on last month?', 'model my savings over 5 years'."},
+     {t:"Code help",d:"Paste broken code and ask what's wrong. Or describe what you want and get working code."},
+   ],
+   tags:["Web","iOS","Android","Voice","Image gen","Code interpreter","File uploads"],note:null},
+
+  {icon:"🟣",name:"Claude.ai",by:"Anthropic",cats:["General Chat"],type:"first",typeLabel:"First-party",agentOS:false,
+   models:"Claude Sonnet 4.6 · Claude Opus 4.6 (Pro/Max)",
+   price:"Free (daily cap) · Pro $20/mo · Max $100–200/mo",
+   priceWarn:"Free tier has a daily message cap that heavy users hit easily. Pro required for consistent use.",
+   desc:"Known for more thoughtful, nuanced responses — less likely to sycophantically agree, more likely to push back constructively. Handles very long documents (up to 200K tokens — roughly 500 pages) in one session.",
+   usecases:[
+     {t:"Reading and analysing long documents",d:"Upload a 100-page contract, research paper, or report. Ask Claude to summarise, find inconsistencies, or answer specific questions."},
+     {t:"Complex writing and editing",d:"Long-form content, restructuring arguments, editing for clarity. Maintains consistent tone across very long pieces."},
+     {t:"Thinking through hard decisions",d:"Lay out a problem — career, investment, medical — and get a nuanced, balanced analysis rather than a quick answer."},
+     {t:"Coding and debugging",d:"Best-in-class for understanding complex codebases. Preferred by professional developers for reliable, well-structured code."},
+     {t:"Financial analysis",d:"Upload statements, model scenarios, ask 'if I save X per month for Y years at Z% return, what do I end up with?' — Claude runs the logic and explains it."},
+   ],
+   tags:["Web","iOS","Android","File uploads","Projects","200K context"],note:null},
+
+  {icon:"✨",name:"Gemini",by:"Google DeepMind",cats:["General Chat"],type:"first",typeLabel:"First-party",agentOS:false,
+   models:"Gemini 2.5 Flash (free) · Gemini 2.5 Pro (paid)",
+   price:"Free · Google AI Pro $19.99/mo",priceWarn:null,
+   desc:"Google's consumer AI. Strongest when your question involves Google's own data — Search, Maps, YouTube, Gmail. Deep Workspace integration. Gemini Live enables real-time voice with natural back-and-forth interruptions.",
+   usecases:[
+     {t:"Questions you'd normally Google",d:"Has real-time Google Search built in — better for factual, current questions than static-training models."},
+     {t:"Planning and local research",d:"Integrates Google Maps and local data. 'Best restaurants near me on Saturday evening' gives real, current results."},
+     {t:"Working with Gmail and Drive",d:"On paid plan, Gemini reads your emails, summarises threads, and searches your Drive files during the conversation."},
+     {t:"Voice conversations on the go",d:"Gemini Live lets you have a natural spoken conversation — interrupt, go back, change topic — like talking to a person."},
+   ],
+   tags:["Web","iOS","Android","Voice","Workspace","Search","Real-time"],note:null},
+
+  {icon:"⚡",name:"Grok",by:"xAI",cats:["General Chat","Research"],type:"first",typeLabel:"First-party",agentOS:false,
+   models:"Grok 3 Mini (free) · Grok 3 (SuperGrok)",
+   price:"Free (limited) · SuperGrok $30/mo",
+   priceWarn:"Real-time features and full reasoning depth require SuperGrok.",
+   desc:"AI built into X (Twitter). The only major AI with real-time social media data — can summarise what's trending, follow ongoing news stories, and understand current events with a depth no static-training model can match.",
+   usecases:[
+     {t:"Breaking news and trending topics",d:"Ask what's happening right now on any topic. Grok pulls from live X posts and gives a synthesised picture — not yesterday's training data."},
+     {t:"Understanding public sentiment",d:"'What are people saying about this product/event?' Grok reads the actual conversation happening on social media."},
+   ],
+   tags:["Web","iOS","Android","Real-time X","Current events"],note:null},
+
+  {icon:"🟠",name:"Le Chat",by:"Mistral AI",cats:["General Chat"],type:"first",typeLabel:"First-party",agentOS:false,
+   models:"Mistral Large 3",
+   price:"Free · Pro €14.99/mo",priceWarn:null,
+   desc:"Mistral's consumer chat app. EU-hosted, GDPR-compliant by design. Particularly strong for European languages. Good alternative for users who want data processed and stored in Europe under EU law.",
+   usecases:[
+     {t:"European language tasks",d:"Writing, translating, or communicating in French, German, Spanish, Italian. Outperforms US models on European language nuance."},
+     {t:"Privacy-conscious users",d:"For users who want AI that is legally processed and stored in Europe rather than routed through US or Chinese infrastructure."},
+   ],
+   tags:["Web","Mobile","EU-hosted","Multilingual","GDPR"],note:null},
+
+  {icon:"🐟",name:"DeepSeek",by:"DeepSeek",cats:["General Chat"],type:"first",typeLabel:"First-party",agentOS:false,
+   models:"DeepSeek V3 (chat) · DeepSeek R2 (reasoning mode)",
+   price:"Free (consumer) · Ultra-cheap API",
+   priceWarn:"Data sent to DeepSeek is subject to Chinese national security laws. Not suitable for sensitive personal or business information.",
+   desc:"Powerful general chat and reasoning at no cost. Open-source. Became globally viral when its model quality shocked the AI industry in Jan 2025. Strong for coding and logical reasoning.",
+   usecases:[
+     {t:"Free high-quality AI access",d:"Strong AI capabilities without a subscription — comparable to paid US models. Suitable only where data privacy is not a concern."},
+     {t:"Coding and reasoning",d:"Strong at writing, debugging, and explaining code. R2 reasoning mode comparable to OpenAI's o3 on many benchmarks."},
+   ],
+   tags:["Web","Mobile","Free","Open-source","Coding"],
+   note:"⚡ Data sent to DeepSeek is subject to Chinese national security laws. Multiple governments restrict its use on government devices. Do not use for sensitive personal, financial, or business data."},
+
+  // ── RESEARCH ──
+  {icon:"🔍",name:"Perplexity",by:"Independent",cats:["Research"],type:"agg",typeLabel:"Multi-model Aggregator",agentOS:false,
+   models:"Sonar (free) · GPT-5.3 / Claude Sonnet / Gemini 2.5 (Pro)",
+   price:"Free (very limited) · Pro $20/mo",
+   priceWarn:"Free: ~5 Pro Searches/day. No premium models on free tier. In early 2026, paying subscribers reported silent quota cuts — Pro dropped 600→200 searches/week without notification.",
+   desc:"AI-powered search engine — not a chatbot. Every answer includes clickable citations. Wraps multiple premium models behind a search interface. Built for the question 'is this actually true?' rather than 'tell me something interesting'.",
+   usecases:[
+     {t:"Fact-checking",d:"Paste a claim, ask Perplexity to verify it. Every answer comes with sources you can click to read the original."},
+     {t:"Research with citations",d:"Writing a report or article that needs sources? Perplexity gives referenced answers you can trace back."},
+     {t:"Current news and events",d:"Searches the live web — more current than training-data-based models for recent events."},
+     {t:"Product and service comparisons",d:"'Best noise-cancelling headphones 2026' gives a sourced, current comparison rather than outdated training data."},
+   ],
+   tags:["Web","Mobile","Citations","Deep Research","Multi-model"],
+   note:"⚡ Multiple early 2026 reports of silent plan downgrades and quota reductions without subscriber notification. Verify current limits before committing to an annual plan."},
+
+  // ── PERSONAL ASSISTANT ──
+  {icon:"🍎",name:"Siri + Apple Intelligence",by:"Apple ML",cats:["Personal Assistant"],type:"device",typeLabel:"Device-native — Apple",agentOS:true,
+   models:"Apple Foundation Models (on-device) · ChatGPT (opt-in, with permission)",
+   price:"Free — included with iOS 18.1+ / macOS Sequoia+",priceWarn:null,
+   desc:"Ambient AI woven into every iPhone, iPad, and Mac. Siri responds to voice commands and device actions. Writing Tools assist inside every app. All Apple Foundation Model processing happens on-device — nothing sent to Apple servers. Routes to ChatGPT for harder questions only with your explicit permission.",
+   usecases:[
+     {t:"Hands-free help while busy",d:"'Hey Siri, set a timer / send a message to Mum / add milk to my list' — works without touching your phone."},
+     {t:"Writing assistance in any app",d:"Highlight text on iPhone or Mac, tap Writing Tools: rewrite, proofread, shorten, formalise — works in Mail, Notes, Pages, everywhere."},
+     {t:"Smart notification summaries",d:"Collapses a stack of notifications into one-line summaries. Know what matters without reading everything."},
+     {t:"Cross-app actions (Agentic OS)",d:"'Schedule a meeting with the people in this email' — Siri reads the email and creates the calendar event across your apps."},
+   ],
+   tags:["On-device","Privacy","Voice","iOS","macOS","Free","Agentic OS Integration"],note:null},
+
+  {icon:"🔵",name:"Gemini Live",by:"Google DeepMind",cats:["Personal Assistant"],type:"first",typeLabel:"First-party — Google",agentOS:true,
+   models:"Gemini 2.5 Pro / Flash",
+   price:"Free (basic) · Google AI Pro $19.99/mo",priceWarn:null,
+   desc:"Google's AI personal assistant — fully replaced Google Assistant across the Android ecosystem in 2025. Available on Android phones, Pixel devices, Nest speakers, and smart displays. Handles real-time voice conversation with natural interruptions, and has direct access to Gmail, Calendar, Drive, Maps, and YouTube.",
+   usecases:[
+     {t:"Voice assistant on Android",d:"The default AI assistant on Android phones. Set as the long-press home button. 'What's my next meeting?' / 'Navigate to the nearest pharmacy'."},
+     {t:"Cross-Google app actions",d:"'Find the email from Sarah about the Q3 budget and draft a response.' Gemini reads your actual email and drafts from it — zero copy-paste."},
+     {t:"Smart home control",d:"Controls Nest thermostats, lights, displays, and Google Home devices by voice across your home."},
+     {t:"Screen-aware help",d:"Hold home button while looking at anything on your screen — Gemini sees what you see and can answer questions about it."},
+   ],
+   tags:["Android","Nest","Voice","Gmail","Calendar","Maps","Agentic OS Integration"],note:null},
+
+  {icon:"📦",name:"Alexa+",by:"Amazon",cats:["Personal Assistant"],type:"device",typeLabel:"Device-native — Amazon",agentOS:true,
+   models:"Amazon Nova · Claude (via Amazon Bedrock)",
+   price:"$19.99/mo · Free with qualifying Prime plans in US",priceWarn:null,
+   desc:"Amazon's fully rebuilt AI assistant launched early 2026 — replacing original rule-based Alexa with an LLM-powered agent. Manages smart home, shopping, calendar, and multi-step tasks via Echo devices, Fire TV, and Amazon app.",
+   usecases:[
+     {t:"Smart home control",d:"Control lights, thermostat, locks, cameras across all connected devices. 'Turn off everything downstairs when I go to bed'."},
+     {t:"Amazon shopping by voice",d:"'Order more coffee / track my package / find me a birthday gift under €50' — fully integrated with your Amazon account."},
+     {t:"Multi-room home routines",d:"Set up time or location-triggered routines across your entire home ecosystem."},
+   ],
+   tags:["Voice","Smart home","Echo","Fire TV","Shopping","Agentic OS Integration"],
+   note:"Early 2026 reviews: underperforms ChatGPT and Claude on open-ended reasoning. Strong on smart home and Amazon shopping."},
+
+  {icon:"🔷",name:"Samsung Bixby",by:"Samsung",cats:["Personal Assistant"],type:"device",typeLabel:"Device-native — Samsung",agentOS:true,
+   models:"Samsung AI (proprietary) + Gemini integration on newer devices",
+   price:"Free — included on Samsung Galaxy devices",priceWarn:null,
+   desc:"Samsung's built-in AI assistant, pre-installed on all Galaxy phones, tablets, and smart TVs. Uniquely deep integration with Samsung's own apps and hardware — controls device settings, routines, camera, and Samsung-connected appliances by voice or text. Limited to the Samsung ecosystem.",
+   usecases:[
+     {t:"Device control without touching your phone",d:"Navigate apps, adjust settings, control camera modes — all by voice or Bixby button press."},
+     {t:"Samsung SmartThings home automation",d:"Controls Samsung smart appliances — washer, fridge, TV, robot vacuum — via natural language through SmartThings."},
+     {t:"Bixby Routines",d:"Automate sequences: 'When I arrive home, turn on the lights, unmute my phone, and open Spotify'."},
+   ],
+   tags:["Samsung only","Voice","SmartThings","Free","Device control","Agentic OS Integration"],
+   note:"Useful only within the Samsung ecosystem. Not suitable as a general AI assistant — Gemini or ChatGPT are significantly more capable for open-ended tasks."},
+
+  {icon:"🪟",name:"Copilot (Windows)",by:"Microsoft",cats:["Personal Assistant"],type:"embed",typeLabel:"Embedded — Microsoft · Powered by OpenAI",agentOS:true,
+   models:"GPT-5.3 via Microsoft's OpenAI partnership",
+   price:"Free (basic) · Copilot Pro $20/mo",priceWarn:null,
+   desc:"Microsoft's AI assistant embedded in the Windows 11 taskbar and Edge browser. Distinct from Microsoft 365 Copilot — this is the ambient personal assistant for Windows users, not the Office productivity add-on. Can summarise web pages in Edge, assist with tasks across Windows apps, and answer questions without opening a separate app.",
+   usecases:[
+     {t:"Quick answers from the taskbar",d:"Click the Copilot icon on the Windows taskbar and ask anything — no browser, no new app. Answers appear in a sidebar."},
+     {t:"Summarise web pages in Edge",d:"While browsing, click Copilot in the Edge toolbar to summarise the page, ask questions about the content, or compare with other sources."},
+     {t:"Windows app assistance",d:"Helps with tasks across Windows — draft an email in Outlook, explain an error message, or find a setting you can't locate."},
+   ],
+   tags:["Windows 11","Edge browser","Free","Taskbar","Agentic OS Integration"],note:null},
+
+  {icon:"🌀",name:"OpenClaw",by:"Community / Open Source",cats:["Personal Assistant","Autonomous Agent"],type:"third",typeLabel:"Third-party / Open Source",agentOS:true,
+   models:"Claude / GPT-5.3 / Gemini / Llama 4 (your choice)",
+   price:"Free (self-hosted). Pay only for chosen model's API costs.",priceWarn:null,
+   desc:"Self-hosted personal AI agent — talk to it via WhatsApp, Telegram, or Signal. Manages your email, calendar, flights, and daily briefings autonomously. Runs on your own hardware so your data never touches a third-party server. Originally Clawdbot; went viral Jan 2026; creator joined OpenAI Feb 2026; now community-maintained.",
+   usecases:[
+     {t:"Daily AI briefing via WhatsApp",d:"Every morning, OpenClaw sends a summary of your emails, calendar, and tasks — directly in WhatsApp."},
+     {t:"Email and calendar management by message",d:"'Cancel my 3pm meeting and email John to reschedule' — OpenClaw does it from a simple message."},
+     {t:"Privacy-first personal agent",d:"Full personal AI agent capabilities without any data leaving your own hardware."},
+   ],
+   tags:["Self-hosted","WhatsApp","Telegram","Email","Calendar","Open source","Agentic OS Integration"],
+   note:"⚡ Core maintainer warning: 'If you can't safely run a command line, this project is too dangerous for you' — it has direct access to your email and calendar. NemoClaw is a friendlier fork for less technical users."},
+
+  // ── PRODUCTIVITY ──
+  {icon:"🪟",name:"Microsoft 365 Copilot",by:"Microsoft",cats:["Productivity"],type:"embed",typeLabel:"Embedded — Microsoft · Powered by OpenAI",agentOS:false,
+   models:"GPT-5.3 via Microsoft's OpenAI partnership",
+   price:"~$30/user/month as add-on to Microsoft 365 Business",priceWarn:null,
+   desc:"AI built directly inside Word, Excel, PowerPoint, Outlook, and Teams. You don't open a separate app — the AI is where you already work. The most enterprise-deployed AI product in the world: 90% of Fortune 100 companies use it.",
+   usecases:[
+     {t:"Summarise a long email thread",d:"Open any Outlook thread, click Copilot: 'What's the key decision here and who needs to act?' Saves reading 40 emails."},
+     {t:"Draft documents from bullet points",d:"In Word: type rough notes, ask Copilot to turn them into a formal proposal or report."},
+     {t:"Analyse spreadsheets in plain language",d:"In Excel: 'What were our top 3 expense categories last quarter and how do they compare to last year?' — no formula needed."},
+     {t:"Meeting summaries in Teams",d:"After a call, Copilot generates a summary, decisions made, and who owns each action item."},
+   ],
+   tags:["Word","Excel","PowerPoint","Outlook","Teams","Enterprise"],note:null},
+
+  {icon:"🔵",name:"Gemini in Workspace",by:"Google DeepMind",cats:["Productivity"],type:"embed",typeLabel:"Embedded — Google Workspace",agentOS:false,
+   models:"Gemini 2.5 Pro / Flash",
+   price:"Included in Google AI Pro ($19.99/mo)",priceWarn:null,
+   desc:"AI inside Gmail, Google Docs, Sheets, and Slides. Works where you already are in the Google ecosystem. Unlike Microsoft Copilot, also has live Google Search awareness during the conversation.",
+   usecases:[
+     {t:"Draft or reply to emails in Gmail",d:"Click 'Help me write'. Describe what you want: 'Decline this meeting politely and suggest next week.' Done in seconds."},
+     {t:"Summarise a long Google Doc",d:"Ask Gemini in the sidebar to summarise, pull out key points, or identify action items."},
+     {t:"Answer questions about your spreadsheet",d:"In Sheets: 'Which month had the highest sales and what drove it?' — Gemini reads the data and answers."},
+   ],
+   tags:["Gmail","Docs","Sheets","Slides","Drive","Search"],note:null},
+
+  // ── CODING ──
+  {icon:"🖥️",name:"Cursor",by:"Anysphere",cats:["Coding"],type:"third",typeLabel:"Third-party",agentOS:false,
+   models:"Claude Sonnet 4.6 · GPT-5.4 · Gemini 3 Pro (configurable per task)",
+   price:"Free · Pro $20/mo · Pro+ $60/mo · Ultra $200/mo",
+   priceWarn:"Heavy agentic use burns through Pro credits fast. Budget $60–200/mo for serious professional work.",
+   desc:"AI-native code editor — a fork of VS Code rebuilt around AI from the ground up. Not a plugin. Understands your entire codebase. Valued at $29B in Nov 2025. Used internally by OpenAI.",
+   usecases:[
+     {t:"Build a feature across multiple files",d:"Describe what you want: 'Add user authentication to this app.' Cursor plans changes, edits all relevant files, explains what it did."},
+     {t:"Understand an unfamiliar codebase",d:"'Explain how the payment system works.' Cursor reads the whole repo and gives a clear answer."},
+     {t:"Fix a complex bug",d:"Paste the error. Cursor traces it through the codebase and suggests the fix across files."},
+   ],
+   tags:["VS Code fork","Codebase-aware","Multi-file","Agents","All major models"],note:null},
+
+  {icon:"🐙",name:"GitHub Copilot",by:"GitHub / Microsoft",cats:["Coding"],type:"embed",typeLabel:"Embedded — GitHub · Powered by Anthropic + OpenAI",agentOS:false,
+   models:"Claude Sonnet 4.6 · GPT-5.3",
+   price:"Free (2K completions/mo) · Pro $10/mo · Pro+ $39/mo",priceWarn:null,
+   desc:"AI coding assistant as a plugin inside VS Code, JetBrains, Xcode, Neovim — you don't change your editor. Agent Mode creates branches, writes code, runs tests, opens PRs. 20M+ users; 90% of Fortune 100 companies.",
+   usecases:[
+     {t:"Inline code completion",d:"As you type, Copilot suggests the next line or whole function. Accept with Tab. Speeds up routine coding significantly."},
+     {t:"Explain code you didn't write",d:"Highlight any code block, ask Copilot to explain it. Useful when inheriting someone else's project."},
+     {t:"Write tests automatically",d:"'Write unit tests for this function.' Generates test cases covering edge cases you might miss."},
+   ],
+   tags:["VS Code","JetBrains","Xcode","Agent mode","PR automation"],note:null},
+
+  {icon:"🌬️",name:"Windsurf",by:"Cognition",cats:["Coding"],type:"third",typeLabel:"Third-party",agentOS:false,
+   models:"Multiple models (configurable)",
+   price:"~$15/mo",priceWarn:null,
+   desc:"Session-aware AI coding agent. 'Flow' paradigm tracks your entire working session and understands your intent without re-explanation. Ranked #1 AI dev tool (LogRocket, Feb 2026). Survived the most turbulent acquisition saga of 2025.",
+   usecases:[
+     {t:"Long coding sessions without re-explaining",d:"Windsurf remembers everything you've done — no need to re-explain context when switching between tasks."},
+     {t:"Terminal + editor integrated workflow",d:"Sees your terminal output and editor changes together — can react to terminal errors automatically."},
+   ],
+   tags:["Session memory","Flow paradigm","Terminal-aware","#1 ranked Feb 2026"],note:null},
+
+  {icon:"⚙️",name:"Claude Code",by:"Anthropic",cats:["Coding","Autonomous Agent"],type:"first",typeLabel:"First-party",agentOS:false,
+   models:"Claude Sonnet 4.6",
+   price:"Pay-per-use (Claude API billing)",
+   priceWarn:"Billed per token — can accumulate quickly on large codebases. No monthly cap.",
+   desc:"Terminal-based coding agent — no GUI. Reads your entire codebase, edits files, runs tests, commits code, manages git branches from the command line.",
+   usecases:[
+     {t:"Autonomous coding from terminal",d:"'Fix all TypeScript errors in this project and run the tests.' Claude Code does it without you watching."},
+     {t:"CI/CD pipeline integration",d:"Can be scripted into automated build and test processes — AI as part of your development pipeline."},
+   ],
+   tags:["Terminal","Codebase access","Git","Agentic","No GUI"],note:null},
+
+  // ── AUTONOMOUS AGENT ──
+  {icon:"🤖",name:"OpenAI Operator",by:"OpenAI",cats:["Autonomous Agent"],type:"first",typeLabel:"First-party",agentOS:true,
+   models:"GPT-5.4 (agentic mode)",
+   price:"Included with ChatGPT Pro ($200/mo only)",
+   priceWarn:"Pro plan required. Not available on free or Plus tiers.",
+   desc:"OpenAI's web agent. Controls a real browser autonomously — books restaurants, fills forms, buys tickets, completes multi-step web tasks while you do something else.",
+   usecases:[
+     {t:"Book a restaurant or event",d:"'Book me a table for 2 at a good Italian restaurant this Saturday at 8pm.' Operator opens a browser, finds options, makes the reservation."},
+     {t:"Fill in forms online",d:"Any repetitive web form — visa applications, insurance quotes, job applications — Operator fills it while you do something else."},
+     {t:"Multi-step online research",d:"'Find the 3 cheapest flights to Barcelona in June, compare them and tell me the best option.' Operator browses and reports back."},
+   ],
+   tags:["Browser control","Form filling","Booking","Multi-step","Agentic OS Integration"],note:null},
+
+  // ── CREATIVE ──
+  {icon:"🎨",name:"Midjourney",by:"Midjourney",cats:["Creative"],type:"first",typeLabel:"First-party",agentOS:false,
+   models:"Midjourney v7 (proprietary — trained in-house)",
+   price:"Basic $10/mo · Standard $30/mo · Pro $60/mo · Mega $120/mo",
+   priceWarn:"No free tier. Paid subscription required from day one.",
+   desc:"The gold standard for AI image generation. Unmatched aesthetic quality with genuine artistic depth. Runs entirely through Discord — no open API, a deliberate community-first choice. Profitable and independent.",
+   usecases:[
+     {t:"Artistic and creative imagery",d:"Album artwork, book covers, concept art, fashion mood boards. The go-to when you need images that look like they were made by a skilled artist."},
+     {t:"Brand and marketing visuals",d:"Unique imagery that doesn't look like generic stock photography. Social content, campaign visuals, presentation backgrounds."},
+     {t:"Exploring visual concepts",d:"Describe a vague idea and generate 4 variations instantly. Use it to explore visual directions before committing to a design."},
+   ],
+   tags:["Discord-based","No API","Best quality","Community","v7"],
+   note:"⚡ Class-action lawsuit from artists alleging training on their work without consent. Cases ongoing."},
+
+  {icon:"🎬",name:"Runway Gen-4",by:"Runway",cats:["Creative"],type:"first",typeLabel:"First-party",agentOS:false,
+   models:"Gen-4 (proprietary video model — trained in-house)",
+   price:"Standard $12/mo · Pro $28/mo · Unlimited $76/mo",
+   priceWarn:"Free credits are very limited — enough to evaluate, not for real projects.",
+   desc:"Leading AI video tool for professional use. Most controllable video generation available — Motion Brush directs specific elements while keeping others static. Used on major Hollywood releases.",
+   usecases:[
+     {t:"Short video clips from text",d:"Describe a scene: 'Slow motion rain on a cobblestone street at night.' Runway generates a cinematic clip."},
+     {t:"Animate a still image",d:"Upload a photo and bring it to life — add movement to a portrait, make a landscape feel alive."},
+     {t:"Professional video production",d:"Used on actual film productions for visual effects, concept visualisation, and rapid scene prototyping."},
+   ],
+   tags:["Video gen","Motion brush","Text-to-video","Image-to-video","Professional"],note:null},
+
+  {icon:"🎙️",name:"ElevenLabs",by:"ElevenLabs",cats:["Creative"],type:"first",typeLabel:"First-party",agentOS:false,
+   models:"ElevenLabs v3 (proprietary voice model — trained in-house)",
+   price:"Free (~10K chars/mo) · Starter $5/mo · Creator $22/mo · Pro $99/mo",
+   priceWarn:"Free tier is enough to evaluate quality but not for regular production use.",
+   desc:"Dominant voice AI platform. Clone any voice from a 30-second sample. Hyper-realistic speech in 32 languages. Used by podcasters, studios, game developers, and enterprises for dubbing at scale.",
+   usecases:[
+     {t:"Clone your own voice",d:"Record 30 seconds, create a voice clone. Generate any text in your voice — for content, accessibility, or preservation."},
+     {t:"Dub video into another language",d:"Translate and regenerate audio in a different language in the original speaker's voice. Used professionally for international content."},
+     {t:"Narrate written content",d:"Turn articles, newsletters, or books into audio. More realistic than any other TTS tool available."},
+   ],
+   tags:["Voice cloning","32 languages","Dubbing","TTS","API"],
+   note:"⚡ Voice cloning misuse documented in political disinformation campaigns."},
+
+  {icon:"🎵",name:"Suno",by:"Suno AI",cats:["Creative"],type:"first",typeLabel:"First-party",agentOS:false,
+   models:"Suno v4 (proprietary music model)",
+   price:"Free (limited) · Pro $8/mo · Premier $24/mo",priceWarn:null,
+   desc:"Text-to-music AI. Describe a song — genre, mood, lyrics, instruments — and get a full production with vocals, harmonies, and mastering in seconds.",
+   usecases:[
+     {t:"Background music for videos or podcasts",d:"'Upbeat lo-fi instrumental for a cooking video.' Get a custom track in 30 seconds — no copyright issues on songs you create."},
+     {t:"Create a personalised song as a gift",d:"'Write a cheerful birthday song for my 7-year-old who loves dinosaurs.' A unique gift in minutes."},
+     {t:"Prototype song ideas",d:"Musicians use it to explore melody and arrangement ideas before recording properly."},
+   ],
+   tags:["Text-to-music","Full vocals","Music gen","Free tier"],
+   note:"⚡ Sony, Universal, Warner filed copyright suits 2024 alleging training on copyrighted recordings. Cases ongoing."},
 ];
 
-const agents = [
-  {type:"Personal Agent",name:"OpenClaw",desc:"Self-hosted personal AI agent you talk to via WhatsApp, Telegram, or Signal. Manages email, calendar, flights, daily briefings — all from your phone. Runs on your hardware, data stays local. Bring your own API key (supports Claude, GPT, Gemini, Llama).",specs:["Self-hosted","WhatsApp/Telegram","Email + Calendar","Open source","Privacy-first"],hot:"Most personal"},
-  {type:"Web Agent",name:"OpenAI Operator",desc:"OpenAI's autonomous web agent. Operates a real browser — books restaurants, fills forms, completes multi-step web tasks without you watching. Available on Pro plan.",specs:["Browser control","Multi-step tasks","Web automation","Pro plan"],hot:"Most capable web agent"},
-  {type:"Web Agent",name:"Google Mariner / Astra",desc:"Google's dual agent projects. Mariner operates Chrome autonomously. Astra is Google's real-time multimodal agent — sees your screen, hears you, and acts across Google's ecosystem in real time.",specs:["Browser control","Real-time","Multimodal","Google ecosystem"],hot:null},
-  {type:"Coding Agent",name:"Devin (Cognition)",desc:"The first AI software engineer — given a task, Devin plans, writes, tests, debugs, and deploys code entirely autonomously in a sandboxed environment. Enterprise-focused.",specs:["Fully autonomous","End-to-end","Sandboxed","Enterprise"],hot:"First AI SWE"},
-  {type:"Coding Agent",name:"Claude Code",desc:"Anthropic's terminal-based coding agent. Reads your entire codebase, edits files, runs tests, commits code — all from your command line with no GUI required.",specs:["Terminal-based","Full codebase access","Commits code","Pay-per-use"],hot:null},
-  {type:"Personal Agent",name:"Claude Computer Use",desc:"Claude controlling your actual desktop — clicking buttons, typing, navigating software. Currently in beta. Signals the direction: AI operating any app the way a human would.",specs:["Desktop control","Any app","Beta","Anthropic API"],hot:"Beta frontier"},
-  {type:"Framework / Protocol",name:"MCP (Model Context Protocol)",desc:"Anthropic's open protocol that lets AI agents connect to external tools — email, calendar, Slack, databases, any API. Becoming the industry standard 'USB port' for AI agents. Now under Linux Foundation governance.",specs:["Open standard","Tool connections","Multi-agent","Linux Foundation"],hot:"Industry standard"},
-  {type:"Framework",name:"LangChain / LangGraph",desc:"The most widely used framework for building AI agent pipelines. Developers chain models, tools, and memory together into complex autonomous workflows. Supports all major models.",specs:["Open source","Multi-agent","Memory","All models"],hot:null},
-  {type:"Framework",name:"AutoGPT",desc:"One of the earliest autonomous agent frameworks. Give an AI a goal, watch it plan and execute steps independently using web search, file management, and code execution.",specs:["Open source","Goal-driven","Self-directing","Community"],hot:null},
-];
+// ════════════════════════════════════════════
+// RENDER FUNCTIONS
+// ════════════════════════════════════════════
 
-const creative = [
-  {type:"Image Generation",name:"Midjourney v7",desc:"The gold standard for AI art. Unmatched aesthetic quality and depth. Operates entirely through Discord — no open API. Highly opinionated style that rewards learning its language.",specs:["Discord-based","Best aesthetics","No API","$10–$120/mo"],hot:"Best image quality"},
-  {type:"Image Generation",name:"GPT Image (OpenAI)",desc:"OpenAI's image generator inside ChatGPT. More literal and instructable than Midjourney. Great for product shots, UI mockups, illustrations, and precise prompt-following.",specs:["Inside ChatGPT","Instructable","DALL-E successor","Multimodal"],hot:null},
-  {type:"Image Generation",name:"Stable Diffusion",desc:"Open-source image model. Run entirely on your own hardware. Thousands of community fine-tunes available. Maximum control and privacy. Requires technical setup.",specs:["Open source","Self-hosted","Fine-tunable","Free"],hot:"Most customisable"},
-  {type:"Image Generation",name:"Adobe Firefly",desc:"Adobe's AI image generator, built into Photoshop and Illustrator. Trained only on licensed content — commercially safe for professional work.",specs:["In Photoshop","Commercially safe","Professional","Creative Cloud"],hot:"Commercially safe"},
-  {type:"Video Generation",name:"Sora 2 (OpenAI)",desc:"OpenAI's video model. Generates high-quality, physically coherent video from text or images. Treats video as 'world simulation'. Available to Pro plan users.",specs:["Text-to-video","Physics coherent","Pro plan","Storyboard mode"],hot:null},
-  {type:"Video Generation",name:"Veo 3.1 (Google)",desc:"Google DeepMind's video model. Cinematic quality, strong motion coherence, integrated into Google's creative tools.",specs:["Cinematic","Google ecosystem","High resolution","Motion coherence"],hot:null},
-  {type:"Video Generation",name:"Runway Gen-4",desc:"The leading independent video AI. Most controllable video generation available — hold elements constant while changing others. Standard tool in professional film and content production.",specs:["Most controllable","Professional grade","Motion brush","$12–$76/mo"],hot:"Most controllable"},
-  {type:"Voice AI",name:"ElevenLabs",desc:"Hyper-realistic voice cloning and text-to-speech in 32 languages. Clone any voice in seconds. Used by podcasters, filmmakers, game studios, and enterprises for dubbing and narration.",specs:["Voice cloning","32 languages","Dubbing","API"],hot:"Best voice quality"},
-  {type:"Voice AI",name:"HeyGen",desc:"AI video avatars with lip-synced voice. Upload a video of yourself, generate a digital twin that reads any script. Popular for multilingual content and personalised video at scale.",specs:["AI avatars","Lip sync","Video dubbing","Multilingual"],hot:null},
-  {type:"Music Generation",name:"Suno",desc:"Text-to-music AI. Describe a song in plain language — get a full production with vocals, instruments, and mastering in seconds. Free tier available.",specs:["Full songs","Vocals + instruments","Text-to-music","Free tier"],hot:"Best music gen"},
-  {type:"Music Generation",name:"Udio",desc:"Suno's main competitor. Similar text-to-music capabilities with more fine-grained control over style, genre, and song structure.",specs:["Full songs","Style control","Genre control","Free tier"],hot:null},
-];
-
-function renderOrgs() {
-  document.getElementById('orgs-grid').innerHTML = orgs.map(o=>`
-    <div class="org-card" style="--org-color:${o.color}">
-      <div class="org-header"><div class="org-name">${o.name}</div><div class="org-flag">${o.flag}</div></div>
-      <div class="org-tagline">${o.tagline}</div>
-      <div class="org-meta">
-        <div class="meta-row"><div class="meta-label">Models</div><div class="tags">${o.models.map(m=>`<span class="tag colored">${m}</span>`).join('')}</div></div>
-        <div class="meta-row"><div class="meta-label">Apps</div><div class="tags">${o.apps.map(a=>`<span class="tag">${a}</span>`).join('')}</div></div>
-        <div class="meta-row"><div class="meta-label">Focus</div><div class="tags">${o.focus.map(f=>`<span class="tag">${f}</span>`).join('')}</div></div>
-        <div class="meta-row"><div class="meta-label">Type</div><div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);padding-top:4px">${o.type} · Founded ${o.founded}</div></div>
+function renderLabFilters(){
+  const regions=['All','US','Europe','China','Specialist'];
+  document.getElementById('lab-filters').innerHTML=regions.map(r=>
+    `<button class="fb ${r==='All'?'active':''}" onclick="setLF('${r}',this)">${r}</button>`).join('');
+}
+function setLF(r,btn){
+  document.querySelectorAll('#lab-filters .fb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');renderLabs(r);
+}
+function renderLabs(filter){
+  const list=filter==='All'?labs:labs.filter(l=>l.region===filter);
+  document.getElementById('labs-grid').innerHTML=list.map(l=>`
+    <div class="lab-card" style="--c:${l.c}">
+      <div class="lab-top"><div class="lab-name">${l.name}</div><div class="lab-location">${l.loc}</div></div>
+      <div class="badge-row">
+        <span class="badge b-type">${l.cat}</span>
+        ${l.rel?`<span class="badge b-rel">${l.rel}</span>`:''}
+        <span class="badge b-year">Est. ${l.year}</span>
       </div>
+      <div class="lab-people">${l.people.map(p=>`<div class="person"><div class="person-name">${p.n}</div><div class="person-role">${p.r}</div></div>`).join('')}</div>
+      <div class="lab-tagline">${l.about}</div>
+      <div class="lab-rows">
+        <div class="lab-row"><span class="row-lbl">Models</span><div class="pills">${l.models.map(m=>`<span class="pill pill-c">${m}</span>`).join('')}</div></div>
+        <div class="lab-row"><span class="row-lbl">Apps</span><div class="pills">${l.apps.map(a=>`<span class="pill">${a}</span>`).join('')}</div></div>
+        <div class="lab-row"><span class="row-lbl">Focus</span><div class="pills">${l.focus.map(f=>`<span class="pill">${f}</span>`).join('')}</div></div>
+      </div>
+      ${l.note?`<div class="controversy">${l.note}</div>`:''}
+      <a class="lab-url" href="${l.url}" target="_blank">↗ ${l.url.replace('https://','')}</a>
     </div>`).join('');
 }
 
-function renderModels(filter) {
-  const list = filter==='All' ? models : models.filter(m=>m.by===filter);
-  document.getElementById('models-grid').innerHTML = list.map(m=>`
-    <div class="model-card" data-type="${m.type}">
-      <div class="model-by"><span class="org-dot" style="background:${m.color}"></span>${m.by}</div>
+function renderModelFilters(){
+  const byList=['All',...new Set(models.map(m=>m.by))];
+  document.getElementById('model-filters').innerHTML=byList.map(l=>
+    `<button class="fb ${l==='All'?'active':''}" onclick="setMF('${l}',this)">${l}</button>`).join('');
+}
+function setMF(l,btn){
+  document.querySelectorAll('#model-filters .fb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');renderModels(l);
+}
+function renderModels(filter){
+  const list=filter==='All'?models:models.filter(m=>m.by===filter);
+  document.getElementById('models-grid').innerHTML=list.map(m=>`
+    <div class="model-card">
+      <div class="model-type-badge">${m.type}</div>
+      <div class="model-origin"><span class="odot" style="background:${m.c}"></span>${m.by}</div>
       <div class="model-name">${m.name}</div>
       <div class="model-desc">${m.desc}</div>
-      <div class="specs">
-        ${m.hl?`<span class="spec hl">★ ${m.hl}</span>`:''}
-        ${m.specs.map(s=>`<span class="spec">${s}</span>`).join('')}
+      <div class="model-tags">
+        ${m.star?`<span class="mtag star">★ ${m.star}</span>`:''}
+        ${m.tags.map(t=>`<span class="mtag">${t}</span>`).join('')}
       </div>
+      <div class="model-box"><strong>Notable:</strong> ${m.notable}</div>
+      ${m.training?`<div class="model-box"><strong>Training data:</strong> ${m.training}</div>`:''}
     </div>`).join('');
 }
 
-function renderModelFilters() {
-  const labs=['All',...new Set(models.map(m=>m.by))];
-  document.getElementById('model-filters').innerHTML=labs.map(l=>
-    `<button class="fbtn ${l==='All'?'active':''}" onclick="setMF('${l}',this)">${l}</button>`).join('');
+function renderAppFilters(){
+  document.getElementById('app-filters').innerHTML=appCats.map(c=>
+    `<button class="fb ${c==='All'?'active':''}" onclick="setAF('${c}',this)">${c}</button>`).join('');
 }
-function setMF(l,btn){document.querySelectorAll('#model-filters .fbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderModels(l);}
-
-function renderApps(filter) {
-  const list = filter==='All' ? apps : apps.filter(a=>a.category===filter);
-  document.getElementById('apps-grid').innerHTML = list.map(a=>`
+function setAF(c,btn){
+  document.querySelectorAll('#app-filters .fb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');renderApps(c);
+}
+function renderApps(filter){
+  const list=filter==='All'?apps:apps.filter(a=>a.cats.includes(filter));
+  document.getElementById('apps-grid').innerHTML=list.map(a=>`
     <div class="app-card">
-      <div class="app-header">
+      <div class="app-head">
         <div class="app-icon">${a.icon}</div>
-        <div><div class="app-name">${a.name}</div><div class="app-cat">${a.category} · ${a.by}</div></div>
+        <div class="app-head-text">
+          <div class="app-name">${a.name}</div>
+          <div class="app-meta-line">
+            <span class="app-cat-tag">${a.cats.join(' · ')} · ${a.by}</span>
+          </div>
+        </div>
+      </div>
+      <div class="app-badges">
+        <span class="abadge ${typeClass[a.type]||''}">${a.typeLabel}</span>
+        ${a.agentOS?`<span class="abadge ab-agent">Agentic OS Integration</span>`:''}
       </div>
       <div class="app-desc">${a.desc}</div>
-      <div style="margin-bottom:12px">
-        <div class="ease-label">Ease of start</div>
-        <div class="stars">${[1,2,3,4,5].map(i=>`<div class="star ${i<=a.ease?'on':''}"></div>`).join('')}</div>
-      </div>
-      <div class="app-footer">
-        <div>
-          <div class="app-meta" style="margin-bottom:2px">Powered by: ${a.powered}</div>
-          <div class="app-meta">Best for: ${a.bestFor}</div>
+      <div class="app-info-row">
+        <div class="app-info-pill">
+          <div class="aip-key">Models</div>
+          <div class="aip-val">${a.models}</div>
         </div>
-        <div class="app-price">${a.price}</div>
+        <div class="app-info-pill">
+          <div class="aip-key">Pricing</div>
+          <div class="aip-val">${a.price}</div>
+          ${a.priceWarn?`<div class="aip-warn">${a.priceWarn}</div>`:''}
+        </div>
       </div>
+      <div class="uc-label">Use cases</div>
+      <div class="uc-list">${a.usecases.map(u=>`<div class="uc-item"><strong>${u.t}:</strong> ${u.d}</div>`).join('')}</div>
+      <div class="app-tags">${a.tags.map(t=>`<span class="app-tag">${t}</span>`).join('')}</div>
+      ${a.note?`<div class="app-note">${a.note}</div>`:''}
     </div>`).join('');
 }
 
-function renderAppFilters() {
-  const cats=['All','General Chat','Research','Productivity','Coding','On-device','Social'];
-  document.getElementById('app-filters').innerHTML=cats.map(c=>
-    `<button class="fbtn ${c==='All'?'active':''}" onclick="setAF('${c}',this)">${c}</button>`).join('');
-}
-function setAF(c,btn){document.querySelectorAll('#app-filters .fbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderApps(c);}
-
-function renderList(data, elId, accentVar='var(--accent2)') {
-  document.getElementById(elId).innerHTML = data.map(a=>`
-    <div class="agent-card" style="--accent2:${accentVar}">
-      <div class="agent-type">${a.type}</div>
-      <div class="agent-name">${a.name}</div>
-      <div class="agent-desc">${a.desc}</div>
-      <div class="specs">
-        ${a.hot?`<span class="spec hl2">★ ${a.hot}</span>`:''}
-        ${a.specs.map(s=>`<span class="spec">${s}</span>`).join('')}
-      </div>
-    </div>`).join('');
-}
-
-function switchTab(id,btn) {
+function show(id,btn){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
   btn.classList.add('active');
 }
 
-renderOrgs();
-renderModelFilters(); renderModels('All');
-renderAppFilters(); renderApps('All');
-renderList(agents,'agents-grid','#fa6d9a');
-renderList(creative,'creative-grid','#f5a623');
+renderLabFilters();renderLabs('All');
+renderModelFilters();renderModels('All');
+renderAppFilters();renderApps('All');
 </script>
 </body>
 </html>
